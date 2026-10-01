@@ -13,6 +13,7 @@
 ## 目前狀態
 - 規格討論階段，尚未開始實作。
 - 架構草案：`docs/architecture-v0.1.md`
+- 先前討論摘要（職缺分析、已確定方向）：`docs/discussion-summary.md`，新 session 請先讀
 - 待決策事項列在該文件最後一節。
 
 ## 慣例
