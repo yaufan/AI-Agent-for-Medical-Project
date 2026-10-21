@@ -24,7 +24,9 @@
 
 `make test` 跑全部測試；`make data` 產生合成資料到 `data/synthetic/`（不進 git）；`make eval-m1` 下載公開 PDF 到 `data/raw/`（不進 git）並跑 M1 評估。
 
-題庫修改後：先跑 `python eval/run_retrieval.py`、`python eval/report.py`，再一起提交 `results/m1/`，否則 CI 閘門會拿舊基準比較。
+題庫或檢索程式修改後：跑 `python eval/run_retrieval.py`、`python eval/run_retrieval.py --corpus internal`、`python eval/report.py`，再一起提交 `results/m1/`（含 `internal/`），否則 CI 閘門會拿舊基準比較。
+
+CI 的 GitHub 主機常被 FDA 網站擋下載：內部語料的閘門每次都跑；完整語料的檢查只在下載成功時跑，失敗時顯示警告。
 
 ## 環境
 - 雲端環境：沒有 GPU、連不到 Hugging Face；PostgreSQL 16 已安裝；openFDA、ClinicalTrials.gov、FDA 網站可連線。

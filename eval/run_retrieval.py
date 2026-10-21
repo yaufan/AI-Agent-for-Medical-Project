@@ -10,6 +10,10 @@ development environment cannot reach; run those on the local machine, for exampl
     # reranker served by vLLM or TEI at /rerank:
     python eval/run_retrieval.py --methods hybrid --rerank-url http://localhost:8001 --rerank-model BAAI/bge-reranker-v2-m3
 
+`--corpus internal` uses only the synthetic Markdown documents and the questions answerable from
+them (plus all unauthorized and unanswerable questions). CI always runs it, because it does not
+depend on downloading anything from FDA.
+
 Writes results/m1/<chunking>-<method>[-rerank].json (summaries) and results/m1/runs/*.jsonl
 (per-question rankings as chunk ids only — no document text, so nothing from the corpus is copied
 into the results).
@@ -39,13 +43,19 @@ def main():
     ap.add_argument("--acl", nargs="+", default=["pre", "post", "none"])
     ap.add_argument("--embed-url"), ap.add_argument("--embed-model")
     ap.add_argument("--rerank-url"), ap.add_argument("--rerank-model")
-    ap.add_argument("--out", type=Path, default=ROOT / "results/m1")
+    ap.add_argument("--corpus", choices=["all", "internal"], default="all")
+    ap.add_argument("--out", type=Path)
     args = ap.parse_args()
+    args.out = args.out or ROOT / ("results/m1" if args.corpus == "all" else "results/m1/internal")
 
-    docs, stats = load_corpus(ROOT / "data/corpus", ROOT / "data/raw/public")
+    docs, stats = load_corpus(ROOT / "data/corpus", ROOT / "data/raw/public", include_public=args.corpus == "all")
     if stats["pdf_missing"]:
         sys.exit(f"missing PDFs {stats['pdf_missing']}: run scripts/fetch_public_corpus.py first")
     questions = [json.loads(line) for line in open(ROOT / "eval/questions.jsonl", encoding="utf-8")]
+    if args.corpus == "internal":
+        internal = {d.doc_id for d in docs}
+        questions = [q for q in questions
+                     if all(e["doc_id"] in internal for e in q["evidence"]) or q["type"] == "unanswerable"]
     store = GroupStore.from_json(ROOT / "eval/users.json")
     (args.out / "runs").mkdir(parents=True, exist_ok=True)
 

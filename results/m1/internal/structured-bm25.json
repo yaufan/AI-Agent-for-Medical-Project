@@ -1,0 +1,291 @@
+{
+  "config": {
+    "chunking": "structured",
+    "method": "bm25",
+    "rerank": false,
+    "k": 10,
+    "candidates": 50,
+    "chunks": 61,
+    "embed_model": null,
+    "rerank_model": null
+  },
+  "corpus": {
+    "markdown_docs": 12,
+    "pdf_docs": 0,
+    "pdf_missing": [],
+    "pii_masked": 0
+  },
+  "acl": {
+    "pre": {
+      "by_type": {
+        "code": {
+          "n": 5,
+          "mean_returned": 10.0,
+          "recall@1": 1.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "mrr": 1.0,
+          "ndcg@10": 1.0,
+          "questions_with_leak": 0,
+          "leaked_chunks": 0
+        },
+        "fact": {
+          "n": 20,
+          "mean_returned": 9.85,
+          "recall@1": 0.9,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "mrr": 0.942,
+          "ndcg@10": 0.957,
+          "questions_with_leak": 0,
+          "leaked_chunks": 0
+        },
+        "table": {
+          "n": 13,
+          "mean_returned": 9.77,
+          "recall@1": 1.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "mrr": 1.0,
+          "ndcg@10": 1.0,
+          "questions_with_leak": 0,
+          "leaked_chunks": 0
+        },
+        "unanswerable": {
+          "n": 8,
+          "mean_returned": 8.38,
+          "questions_with_leak": 0,
+          "leaked_chunks": 0
+        },
+        "unauthorized": {
+          "n": 10,
+          "mean_returned": 6.0,
+          "questions_with_leak": 0,
+          "leaked_chunks": 0,
+          "answer_chunk_leaked": 0
+        }
+      },
+      "answerable": {
+        "n": 38,
+        "recall@1": 0.947,
+        "recall@5": 1.0,
+        "recall@10": 1.0,
+        "mrr": 0.969,
+        "ndcg@10": 0.977
+      },
+      "leaks": {
+        "questions_with_leak": 0,
+        "leaked_chunks": 0
+      },
+      "latency_ms": {
+        "acl_ms": {
+          "p50": 0.015,
+          "p95": 0.051
+        },
+        "bm25_ms": {
+          "p50": 0.096,
+          "p95": 0.134
+        },
+        "fusion_ms": {
+          "p50": 0.004,
+          "p95": 0.008
+        },
+        "total_ms": {
+          "p50": 0.121,
+          "p95": 0.199
+        }
+      },
+      "top1_score_median": {
+        "unanswerable": 6.8792,
+        "fact": 27.461,
+        "table": 17.7465,
+        "cross_lingual": null,
+        "code": 17.2522
+      }
+    },
+    "post": {
+      "by_type": {
+        "code": {
+          "n": 5,
+          "mean_returned": 9.2,
+          "recall@1": 1.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "mrr": 1.0,
+          "ndcg@10": 1.0,
+          "questions_with_leak": 0,
+          "leaked_chunks": 0
+        },
+        "fact": {
+          "n": 20,
+          "mean_returned": 8.95,
+          "recall@1": 0.9,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "mrr": 0.942,
+          "ndcg@10": 0.957,
+          "questions_with_leak": 0,
+          "leaked_chunks": 0
+        },
+        "table": {
+          "n": 13,
+          "mean_returned": 8.77,
+          "recall@1": 1.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "mrr": 1.0,
+          "ndcg@10": 1.0,
+          "questions_with_leak": 0,
+          "leaked_chunks": 0
+        },
+        "unanswerable": {
+          "n": 8,
+          "mean_returned": 8.38,
+          "questions_with_leak": 0,
+          "leaked_chunks": 0
+        },
+        "unauthorized": {
+          "n": 10,
+          "mean_returned": 1.1,
+          "questions_with_leak": 0,
+          "leaked_chunks": 0,
+          "answer_chunk_leaked": 0
+        }
+      },
+      "answerable": {
+        "n": 38,
+        "recall@1": 0.947,
+        "recall@5": 1.0,
+        "recall@10": 1.0,
+        "mrr": 0.969,
+        "ndcg@10": 0.977
+      },
+      "leaks": {
+        "questions_with_leak": 0,
+        "leaked_chunks": 0
+      },
+      "latency_ms": {
+        "acl_ms": {
+          "p50": 0.016,
+          "p95": 0.034
+        },
+        "bm25_ms": {
+          "p50": 0.101,
+          "p95": 0.165
+        },
+        "fusion_ms": {
+          "p50": 0.005,
+          "p95": 0.007
+        },
+        "total_ms": {
+          "p50": 0.123,
+          "p95": 0.21
+        }
+      },
+      "top1_score_median": {
+        "unanswerable": 6.8792,
+        "fact": 27.461,
+        "table": 17.7465,
+        "cross_lingual": null,
+        "code": 17.2522
+      }
+    },
+    "none": {
+      "by_type": {
+        "code": {
+          "n": 5,
+          "mean_returned": 10.0,
+          "recall@1": 1.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "mrr": 1.0,
+          "ndcg@10": 1.0,
+          "questions_with_leak": 3,
+          "leaked_chunks": 4
+        },
+        "fact": {
+          "n": 20,
+          "mean_returned": 9.85,
+          "recall@1": 0.9,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "mrr": 0.942,
+          "ndcg@10": 0.957,
+          "questions_with_leak": 9,
+          "leaked_chunks": 18
+        },
+        "table": {
+          "n": 13,
+          "mean_returned": 9.77,
+          "recall@1": 1.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "mrr": 1.0,
+          "ndcg@10": 1.0,
+          "questions_with_leak": 7,
+          "leaked_chunks": 13
+        },
+        "unanswerable": {
+          "n": 8,
+          "mean_returned": 8.38,
+          "questions_with_leak": 0,
+          "leaked_chunks": 0
+        },
+        "unauthorized": {
+          "n": 10,
+          "mean_returned": 10.0,
+          "questions_with_leak": 10,
+          "leaked_chunks": 89,
+          "answer_chunk_leaked": 10
+        }
+      },
+      "answerable": {
+        "n": 38,
+        "recall@1": 0.947,
+        "recall@5": 1.0,
+        "recall@10": 1.0,
+        "mrr": 0.969,
+        "ndcg@10": 0.977
+      },
+      "leaks": {
+        "questions_with_leak": 29,
+        "leaked_chunks": 124
+      },
+      "latency_ms": {
+        "acl_ms": {
+          "p50": 0.0,
+          "p95": 0.0
+        },
+        "bm25_ms": {
+          "p50": 0.094,
+          "p95": 0.134
+        },
+        "fusion_ms": {
+          "p50": 0.004,
+          "p95": 0.007
+        },
+        "total_ms": {
+          "p50": 0.1,
+          "p95": 0.142
+        }
+      },
+      "top1_score_median": {
+        "unanswerable": 6.8792,
+        "fact": 27.461,
+        "table": 17.7465,
+        "cross_lingual": null,
+        "code": 17.2522
+      }
+    }
+  },
+  "revocation": {
+    "user": "ra_huang",
+    "revoked_group": "proj-b",
+    "questions": 3,
+    "chunks_from_group_before": 25,
+    "chunks_from_group_after": 0,
+    "effective_on_next_query": true,
+    "revoke_plus_rerun_ms": 1.02,
+    "reindex_needed": false
+  }
+}

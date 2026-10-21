@@ -216,10 +216,12 @@ def load_pdf(path: Path, doc_id: str, title: str, kind: str = "fda_guidance", gr
 
 # ---------- Corpus ----------
 
-def load_corpus(corpus_dir: Path, raw_dir: Path) -> tuple[list[Document], dict]:
+def load_corpus(corpus_dir: Path, raw_dir: Path, include_public: bool = True) -> tuple[list[Document], dict]:
     """Synthetic Markdown under corpus_dir/<group>/ plus public PDFs listed in corpus_dir/public_manifest.json."""
     docs = [load_markdown(p) for p in sorted(corpus_dir.glob("*/*.md"))]
     stats = {"markdown_docs": len(docs), "pdf_docs": 0, "pdf_missing": [], "pii_masked": 0}
+    if not include_public:
+        return docs, stats
     manifest = json.loads((corpus_dir / "public_manifest.json").read_text(encoding="utf-8"))
     for item in manifest["documents"]:
         path = raw_dir / item["file"]

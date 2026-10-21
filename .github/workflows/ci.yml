@@ -28,18 +28,26 @@ jobs:
       - run: pip install "./packages/rag[pdf,test]"
       - name: Unit tests (synthetic corpus only)
         run: python -m pytest -q packages/rag/tests
-      - uses: actions/cache@v4
-        with:
-          path: data/raw/public
-          key: public-corpus-${{ hashFiles('data/corpus/public_manifest.json') }}
-      - name: Fetch public corpus (FDA guidance and 510(k) PDFs)
-        run: python scripts/fetch_public_corpus.py
-      - name: Quote checks against the PDFs
-        run: python -m pytest -q packages/rag/tests -k pdf_evidence
-      - name: Retrieval evaluation and gate (leaks must be zero; no regression against committed results)
+      - name: Retrieval gate on the synthetic internal corpus (always runs; no downloads)
         run: |
+          python eval/run_retrieval.py --corpus internal --out /tmp/m1-internal
+          python eval/check_gate.py --baseline results/m1/internal --candidate /tmp/m1-internal
+      # FDA's website rejects some data-centre networks, GitHub-hosted runners included. When the
+      # download fails, the full-corpus checks are skipped with a warning instead of failing the build;
+      # run `make eval-m1` locally and commit results/m1/ to refresh the full baseline.
+      - name: Fetch public corpus (FDA guidance and 510(k) PDFs)
+        id: fetch
+        continue-on-error: true
+        run: python scripts/fetch_public_corpus.py
+      - name: Full-corpus quote checks and retrieval gate
+        if: steps.fetch.outcome == 'success'
+        run: |
+          python -m pytest -q packages/rag/tests -k pdf_evidence
           python eval/run_retrieval.py --out /tmp/m1
           python eval/check_gate.py --baseline results/m1 --candidate /tmp/m1
+      - name: Report skipped full-corpus checks
+        if: steps.fetch.outcome != 'success'
+        run: echo "::warning title=Full-corpus retrieval checks skipped::Public PDFs could not be downloaded from FDA on this runner; only the synthetic-corpus gate ran."
 
   erpqms-postgres:
     runs-on: ubuntu-latest
