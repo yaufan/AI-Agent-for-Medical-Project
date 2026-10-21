@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nodule-service-config
+data:
+  MODEL_PATH: /app/models/nodule_cnn.onnx
+  GBM_PATH: /app/models/gbm_final.joblib
+  REFERENCE_PATH: /app/models/reference_profile.json
+  THRESHOLD: "0.567"   # P1 交叉驗證選出的 1 FP/scan 操作點（results/operating_points.json）
+  MAX_WORKERS: "1"
+  ORT_THREADS: "4"
+  ORT_PROVIDERS: CPUExecutionProvider
+  DRIFT_WINDOW: "50"
+  DRIFT_MIN_SAMPLES: "20"   # 樣本太少時 PSI 沒有意義

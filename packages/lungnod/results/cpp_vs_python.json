@@ -1,0 +1,8 @@
+{
+ "n": 300,
+ "max_abs_diff": 5.067138671988047e-07,
+ "cpp_infer_ms": 2310.58,
+ "cpp_load_ms": 25.4622,
+ "cpp_process_wall_s": 2.46,
+ "python_infer_ms": 2185.7
+}

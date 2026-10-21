@@ -1,0 +1,19 @@
+[project]
+name = "lungnod"
+version = "0.1.0"
+description = "LIDC-IDRI 肺結節偵測：傳統影像處理與 3D CNN（研究用途）"
+requires-python = ">=3.10"
+dependencies = [
+    "numpy>=2.0", "scipy>=1.13", "pydicom>=3.0", "scikit-learn>=1.5",
+    "joblib>=1.4", "onnxruntime>=1.18",
+]
+
+[project.optional-dependencies]
+train = ["torch>=2.3", "onnx>=1.16", "matplotlib>=3.8", "idc-index>=0.13"]
+
+[tool.setuptools]
+packages = ["lungnod"]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"

@@ -1,0 +1,66 @@
+name: ci
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.11"}
+      - name: Install
+        run: pip install ./packages/lungnod -r services/cad-service/requirements-dev.txt
+      - name: lungnod (P1) unit tests
+        run: python -m pytest -q packages/lungnod/tests
+      - name: cad-service (P2) tests
+        run: python -m pytest -q services/cad-service/tests
+      - name: erpqms tests
+        run: python -m pytest -q packages/erpqms/tests
+
+  erpqms-postgres:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env: {POSTGRES_PASSWORD: postgres, POSTGRES_DB: erpqms}
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U postgres" --health-interval 5s --health-timeout 5s --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.11"}
+      - run: pip install "psycopg[binary]>=3.1"
+      - name: Same answers on SQLite and PostgreSQL
+        env: {PGPASSWORD: postgres}
+        run: python packages/erpqms/scripts/check_postgres.py --dsn "host=localhost user=postgres password=postgres dbname=erpqms"
+
+  secrets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  image:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build image
+        run: docker build -f services/cad-service/deploy/Dockerfile -t nodule-service:${{ github.sha }} .
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.11"}
+      - name: Smoke test (container starts, loads a model, reports ready)
+        run: |
+          pip install numpy onnx pydicom pytest
+          mkdir -p models
+          python -c "import sys; sys.path.insert(0, 'services/cad-service/tests'); from conftest import tiny_onnx; tiny_onnx('models/nodule_cnn.onnx')"
+          docker run -d --name svc -p 8000:8000 -v "$PWD/models:/app/models:ro" \
+            -e MODEL_PATH=/app/models/nodule_cnn.onnx -e GBM_PATH= nodule-service:${{ github.sha }}
+          for i in $(seq 30); do curl -fsS localhost:8000/readyz && exit 0; sleep 2; done
+          docker logs svc; exit 1

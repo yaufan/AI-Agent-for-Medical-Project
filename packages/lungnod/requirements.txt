@@ -1,0 +1,11 @@
+numpy>=2.0
+scipy>=1.13
+pydicom>=3.0
+scikit-learn>=1.5
+joblib>=1.4
+matplotlib>=3.8
+torch>=2.3
+onnx>=1.16
+onnxruntime>=1.18
+idc-index>=0.13
+pytest>=8

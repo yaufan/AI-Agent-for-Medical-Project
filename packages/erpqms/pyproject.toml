@@ -1,0 +1,19 @@
+[project]
+name = "erpqms"
+version = "0.1.0"
+description = "Synthetic ERP + QMS database for a fictional lung-nodule CAD vendor (standard library only)"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.optional-dependencies]
+test = ["pytest>=8"]
+
+[tool.setuptools]
+packages = ["erpqms"]
+
+[tool.setuptools.package-data]
+erpqms = ["schema.sql"]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"

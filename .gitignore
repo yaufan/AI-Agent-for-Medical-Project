@@ -216,3 +216,20 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# ---- Project-specific ----
+# Secrets: copy .env.example to .env; never commit keys
+*.pem
+*.key
+
+# Generated data and downloads (reproducible from scripts, not committed)
+data/synthetic/
+data/raw/
+packages/lungnod/data/
+packages/lungnod/cache/
+services/cad-service/models/
+models/
+*.sqlite
+*.onnx
+*.joblib
+.DS_Store

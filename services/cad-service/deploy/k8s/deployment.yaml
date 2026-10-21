@@ -1,0 +1,71 @@
+# CPU 版。套用：kubectl apply -f deploy/k8s/
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nodule-service
+  labels: {app: nodule-service}
+spec:
+  # 工作狀態目前存在記憶體，多副本時 GET /v1/jobs 可能打到別的 Pod 而查不到。
+  # 要水平擴充，先把工作狀態移到 Redis／資料庫，再調高副本數（或用 KEDA 依佇列長度擴充）。
+  replicas: 1
+  selector:
+    matchLabels: {app: nodule-service}
+  template:
+    metadata:
+      labels: {app: nodule-service}
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8000"
+        prometheus.io/path: /metrics
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+      containers:
+        - name: nodule-service
+          image: nodule-service:0.1.0
+          imagePullPolicy: IfNotPresent
+          ports: [{containerPort: 8000}]
+          envFrom:
+            - configMapRef: {name: nodule-service-config}
+          resources:
+            requests: {cpu: "2", memory: 4Gi}
+            limits: {cpu: "4", memory: 8Gi}     # 一次 CT 推論峰值約 3 GB
+          startupProbe:
+            httpGet: {path: /readyz, port: 8000}
+            periodSeconds: 5
+            failureThreshold: 24
+          readinessProbe:
+            httpGet: {path: /readyz, port: 8000}
+            periodSeconds: 10
+          livenessProbe:
+            httpGet: {path: /healthz, port: 8000}
+            periodSeconds: 20
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+          volumeMounts:
+            - {name: models, mountPath: /app/models, readOnly: true}
+            - {name: tmp, mountPath: /tmp}
+      volumes:
+        - name: models
+          persistentVolumeClaim: {claimName: nodule-models}
+        - name: tmp
+          emptyDir: {sizeLimit: 2Gi}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nodule-service
+spec:
+  selector: {app: nodule-service}
+  ports: [{port: 80, targetPort: 8000}]
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nodule-models
+spec:
+  accessModes: [ReadOnlyMany]
+  resources:
+    requests: {storage: 1Gi}

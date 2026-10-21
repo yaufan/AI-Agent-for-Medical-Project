@@ -1,0 +1,5 @@
+# 服務執行所需（P1 的 lungnod 套件另外用 pip install ../../packages/lungnod 安裝）
+fastapi>=0.110
+uvicorn>=0.29
+prometheus-client>=0.20
+python-multipart>=0.0.9

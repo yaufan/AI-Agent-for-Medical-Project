@@ -1,0 +1,61 @@
+病例 48，目標結節 77
+Fold 1/4：訓練 36 例、測試 12 例
+    CNN 訓練樣本：正 140、負 19693
+    epoch 1/8 loss=0.627 (152s)
+    epoch 2/8 loss=0.526 (155s)
+    epoch 3/8 loss=0.454 (150s)
+    epoch 4/8 loss=0.384 (121s)
+    epoch 5/8 loss=0.254 (149s)
+    epoch 6/8 loss=0.168 (141s)
+    epoch 7/8 loss=0.133 (125s)
+    epoch 8/8 loss=0.098 (149s)
+    CNN 訓練時間 1156s
+Fold 2/4：訓練 36 例、測試 12 例
+    CNN 訓練樣本：正 124、負 19566
+    epoch 1/8 loss=0.631 (144s)
+    epoch 2/8 loss=0.517 (149s)
+    epoch 3/8 loss=0.480 (147s)
+    epoch 4/8 loss=0.429 (145s)
+    epoch 5/8 loss=0.339 (149s)
+    epoch 6/8 loss=0.259 (141s)
+    epoch 7/8 loss=0.208 (145s)
+    epoch 8/8 loss=0.165 (148s)
+    CNN 訓練時間 1180s
+Fold 3/4：訓練 36 例、測試 12 例
+    CNN 訓練樣本：正 133、負 19622
+    epoch 1/8 loss=0.633 (145s)
+    epoch 2/8 loss=0.575 (154s)
+    epoch 3/8 loss=0.509 (151s)
+    epoch 4/8 loss=0.460 (157s)
+    epoch 5/8 loss=0.397 (149s)
+    epoch 6/8 loss=0.277 (145s)
+    epoch 7/8 loss=0.206 (144s)
+    epoch 8/8 loss=0.159 (153s)
+    CNN 訓練時間 1209s
+Fold 4/4：訓練 36 例、測試 12 例
+    CNN 訓練樣本：正 122、負 19557
+    epoch 1/8 loss=0.609 (105s)
+    epoch 2/8 loss=0.499 (92s)
+    epoch 3/8 loss=0.450 (88s)
+    epoch 4/8 loss=0.406 (90s)
+    epoch 5/8 loss=0.390 (83s)
+    epoch 6/8 loss=0.328 (82s)
+    epoch 7/8 loss=0.272 (82s)
+    epoch 8/8 loss=0.244 (78s)
+    CNN 訓練時間 712s
+候選點敏感度 73/77 = 0.948，平均 548 個候選/例
+A1_LoG_only          CPM=0.063 (95% CI 0.010-0.133) 0.125:0.04 0.25:0.05 0.5:0.05 1:0.06 2:0.06 4:0.08 8:0.09
+A2_Hessian_dot_only  CPM=0.440 (95% CI 0.351-0.542) 0.125:0.19 0.25:0.26 0.5:0.31 1:0.45 2:0.55 4:0.61 8:0.70
+B_handcrafted_GBM    CPM=0.475 (95% CI 0.350-0.564) 0.125:0.23 0.25:0.27 0.5:0.43 1:0.52 2:0.56 4:0.64 8:0.68
+C_3D_CNN             CPM=0.495 (95% CI 0.383-0.615) 0.125:0.31 0.25:0.35 0.5:0.45 1:0.52 2:0.55 4:0.61 8:0.68
+B+C_ensemble         CPM=0.623 (95% CI 0.502-0.724) 0.125:0.47 0.25:0.51 0.5:0.56 1:0.64 2:0.69 4:0.74 8:0.77
+用全部病例訓練最終模型
+    CNN 訓練樣本：正 173、負 26146
+    epoch 1/8 loss=0.621 (83s)
+    epoch 2/8 loss=0.540 (87s)
+    epoch 3/8 loss=0.510 (94s)
+    epoch 4/8 loss=0.426 (91s)
+    epoch 5/8 loss=0.345 (94s)
+    epoch 6/8 loss=0.247 (91s)
+    epoch 7/8 loss=0.172 (93s)
+    epoch 8/8 loss=0.160 (94s)

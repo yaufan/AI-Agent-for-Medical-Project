@@ -1,0 +1,18 @@
+# GPU（A100 MIG 切片）版本的差異。前提：
+#   1. 叢集裝了 NVIDIA GPU Operator，MIG strategy 設為 mixed，切片會以 nvidia.com/mig-<profile> 資源出現；
+#   2. 映像改裝 onnxruntime-gpu（並把 ORT_PROVIDERS 改成 CUDAExecutionProvider,CPUExecutionProvider）。
+# A100 40GB 的 profile：1g.5gb（最多 7 片）、2g.10gb、3g.20gb、4g.20gb、7g.40gb。
+# 這個 3D CNN 很小，1g.5gb 就夠；同一張卡可以讓 7 個這種服務各拿一片，彼此記憶體與算力隔離。
+# 套用：kubectl patch deployment nodule-service --patch-file deploy/k8s/gpu-mig-patch.yaml
+spec:
+  template:
+    spec:
+      nodeSelector:
+        nvidia.com/mig.config: all-1g.5gb
+      containers:
+        - name: nodule-service
+          env:
+            - {name: ORT_PROVIDERS, value: "CUDAExecutionProvider,CPUExecutionProvider"}
+          resources:
+            limits:
+              nvidia.com/mig-1g.5gb: 1

@@ -1,0 +1,26 @@
+{
+ "method": "B+C_ensemble",
+ "cpm_recomputed": 0.6233766233766234,
+ "operating_points": {
+  "0.5": {
+   "threshold": 0.679,
+   "sensitivity": 0.558,
+   "fp_per_scan": 0.5
+  },
+  "1": {
+   "threshold": 0.5671,
+   "sensitivity": 0.636,
+   "fp_per_scan": 1.0
+  },
+  "2": {
+   "threshold": 0.5078,
+   "sensitivity": 0.688,
+   "fp_per_scan": 2.0
+  },
+  "4": {
+   "threshold": 0.4621,
+   "sensitivity": 0.74,
+   "fp_per_scan": 4.0
+  }
+ }
+}

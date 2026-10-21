@@ -1,0 +1,24 @@
+# 本機試跑：服務＋Prometheus
+#   docker compose -f services/cad-service/deploy/docker-compose.yml up --build
+# 模型檔先放在 services/cad-service/models/（nodule_cnn.onnx、gbm_final.joblib、reference_profile.json）
+services:
+  nodule-service:
+    build:
+      context: ../../..
+      dockerfile: services/cad-service/deploy/Dockerfile
+    image: nodule-service:0.1.0
+    ports: ["8000:8000"]
+    environment:
+      MODEL_PATH: /app/models/nodule_cnn.onnx
+      GBM_PATH: /app/models/gbm_final.joblib
+      REFERENCE_PATH: /app/models/reference_profile.json
+      THRESHOLD: "0.567"   # P1 交叉驗證選出的 1 FP/scan 操作點（results/operating_points.json）
+      MAX_WORKERS: "1"
+      ORT_THREADS: "4"
+    volumes:
+      - ../models:/app/models:ro
+  prometheus:
+    image: prom/prometheus:v2.53.0
+    ports: ["9090:9090"]
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro

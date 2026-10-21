@@ -1,0 +1,10 @@
+{
+ "onnx_file": "results/nodule_cnn.onnx",
+ "size_kb": 844.0,
+ "max_abs_diff_vs_torch": 4.172325134277344e-07,
+ "cpu_threads": 4,
+ "ms_per_300_candidates": {
+  "onnxruntime": 2332,
+  "pytorch": 4034
+ }
+}
