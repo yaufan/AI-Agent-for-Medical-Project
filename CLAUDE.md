@@ -19,8 +19,12 @@
 | `packages/lungnod/` | P1：肺結節偵測 | `python -m pytest -q packages/lungnod/tests` |
 | `services/cad-service/` | P2：推論服務 | `python -m pytest -q services/cad-service/tests` |
 | `packages/erpqms/` | 合成 ERP＋QMS、`scenarios.sql` | `python -m pytest -q packages/erpqms/tests` |
+| `packages/rag/` | 檢索與評估 | `python -m pytest -q packages/rag/tests`（PDF 相關測試在未下載時自動略過） |
+| `eval/` | 題庫、使用者、評估、閘門 | `python eval/run_retrieval.py`；`python eval/check_gate.py --baseline results/m1 --candidate <dir>` |
 
-`make test` 跑全部測試；`make data` 產生合成資料到 `data/synthetic/`（不進 git）。
+`make test` 跑全部測試；`make data` 產生合成資料到 `data/synthetic/`（不進 git）；`make eval-m1` 下載公開 PDF 到 `data/raw/`（不進 git）並跑 M1 評估。
+
+題庫修改後：先跑 `python eval/run_retrieval.py`、`python eval/report.py`，再一起提交 `results/m1/`，否則 CI 閘門會拿舊基準比較。
 
 ## 環境
 - 雲端環境：沒有 GPU、連不到 Hugging Face；PostgreSQL 16 已安裝；openFDA、ClinicalTrials.gov、FDA 網站可連線。

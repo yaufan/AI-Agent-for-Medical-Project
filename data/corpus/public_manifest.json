@@ -1,0 +1,143 @@
+{
+  "description": "Public documents for the knowledge base. Files are downloaded to data/raw/public/ by scripts/fetch_public_corpus.py and are not committed. Group: public.",
+  "documents": [
+    {
+      "doc_id": "FDA-G-77635",
+      "kind": "fda_guidance",
+      "title": "Computer-Assisted Detection Devices Applied to Radiology Images and Radiology Device Data - Premarket Notification [510(k)] Submissions (Final, 2022-09-28)",
+      "url": "https://www.fda.gov/media/77635/download",
+      "file": "fda-guidance-77635.pdf",
+      "license": "FDA website content: public domain unless otherwise noted (FDA website policies, checked 2026-10-21)"
+    },
+    {
+      "doc_id": "FDA-G-77642",
+      "kind": "fda_guidance",
+      "title": "Clinical Performance Assessment: Considerations for Computer-Assisted Detection Devices Applied to Radiology Images and Radiology Device Data in Premarket Notification (510(k)) Submissions (Final, 2022-09-28)",
+      "url": "https://www.fda.gov/media/77642/download",
+      "file": "fda-guidance-77642.pdf",
+      "license": "FDA website content: public domain unless otherwise noted (FDA website policies, checked 2026-10-21)"
+    },
+    {
+      "doc_id": "FDA-G-99785",
+      "kind": "fda_guidance",
+      "title": "Deciding When to Submit a 510(k) for a Software Change to an Existing Device (Final, 2017-10-25)",
+      "url": "https://www.fda.gov/media/99785/download",
+      "file": "fda-guidance-99785.pdf",
+      "license": "FDA website content: public domain unless otherwise noted (FDA website policies, checked 2026-10-21)"
+    },
+    {
+      "doc_id": "FDA-G-153781",
+      "kind": "fda_guidance",
+      "title": "Content of Premarket Submissions for Device Software Functions (Final, 2023-06-14)",
+      "url": "https://www.fda.gov/media/153781/download",
+      "file": "fda-guidance-153781.pdf",
+      "license": "FDA website content: public domain unless otherwise noted (FDA website policies, checked 2026-10-21)"
+    },
+    {
+      "doc_id": "FDA-G-166704",
+      "kind": "fda_guidance",
+      "title": "Marketing Submission Recommendations for a Predetermined Change Control Plan for Artificial Intelligence-Enabled Device Software Functions (Final, 2025-08-18)",
+      "url": "https://www.fda.gov/media/166704/download",
+      "file": "fda-guidance-166704.pdf",
+      "license": "FDA website content: public domain unless otherwise noted (FDA website policies, checked 2026-10-21)"
+    },
+    {
+      "doc_id": "FDA-G-184856",
+      "kind": "fda_guidance",
+      "title": "Artificial Intelligence-Enabled Device Software Functions: Lifecycle Management and Marketing Submission Recommendations (Draft, 2025-01-07)",
+      "url": "https://www.fda.gov/media/184856/download",
+      "file": "fda-guidance-184856.pdf",
+      "license": "FDA website content: public domain unless otherwise noted (FDA website policies, checked 2026-10-21)"
+    },
+    {
+      "doc_id": "510K-K254075",
+      "kind": "510k_decision",
+      "title": "K254075 Synapse Lung Nodule AI (Fujifilm Corporation), cleared 2026-05-27",
+      "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf25/K254075.pdf",
+      "file": "510k-K254075.pdf",
+      "product_code": "OEB",
+      "license": "FDA-published 510(k) decision letter and summary; not redistributed in this repo, downloaded by script"
+    },
+    {
+      "doc_id": "510K-K251203",
+      "kind": "510k_decision",
+      "title": "K251203 AVIEW Lung Nodule CAD (Coreline Soft Co., Ltd.), cleared 2025-12-03",
+      "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf25/K251203.pdf",
+      "file": "510k-K251203.pdf",
+      "product_code": "OEB",
+      "license": "FDA-published 510(k) decision letter and summary; not redistributed in this repo, downloaded by script"
+    },
+    {
+      "doc_id": "510K-K240554",
+      "kind": "510k_decision",
+      "title": "K240554 InferRead Lung CT.AI (Infervision Medical Technology Co., Ltd.), cleared 2025-05-16",
+      "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf24/K240554.pdf",
+      "file": "510k-K240554.pdf",
+      "product_code": "OEB",
+      "license": "FDA-published 510(k) decision letter and summary; not redistributed in this repo, downloaded by script"
+    },
+    {
+      "doc_id": "510K-K242919",
+      "kind": "510k_decision",
+      "title": "K242919 V5med Lung AI (V5med Inc.), cleared 2025-03-27",
+      "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf24/K242919.pdf",
+      "file": "510k-K242919.pdf",
+      "product_code": "OEB",
+      "license": "FDA-published 510(k) decision letter and summary; not redistributed in this repo, downloaded by script"
+    },
+    {
+      "doc_id": "510K-K231157",
+      "kind": "510k_decision",
+      "title": "K231157 syngo.CT Lung CAD (Version VD30) (Siemens Healthcare GmbH), cleared 2023-07-19",
+      "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf23/K231157.pdf",
+      "file": "510k-K231157.pdf",
+      "product_code": "OEB",
+      "license": "FDA-published 510(k) decision letter and summary; not redistributed in this repo, downloaded by script"
+    },
+    {
+      "doc_id": "510K-K221592",
+      "kind": "510k_decision",
+      "title": "K221592 AVIEW Lung Nodule CAD (Coreline Soft Co., Ltd.), cleared 2023-02-24",
+      "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf22/K221592.pdf",
+      "file": "510k-K221592.pdf",
+      "product_code": "OEB",
+      "license": "FDA-published 510(k) decision letter and summary; not redistributed in this repo, downloaded by script"
+    },
+    {
+      "doc_id": "510K-K221612",
+      "kind": "510k_decision",
+      "title": "K221612 ClearRead CT (Riverain Technologies, Inc.), cleared 2022-12-05",
+      "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf22/K221612.pdf",
+      "file": "510k-K221612.pdf",
+      "product_code": "OEB",
+      "license": "FDA-published 510(k) decision letter and summary; not redistributed in this repo, downloaded by script"
+    },
+    {
+      "doc_id": "510K-K203258",
+      "kind": "510k_decision",
+      "title": "K203258 syngo.CT Lung CAD (Siemens Healthcare GmbH), cleared 2021-03-31",
+      "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf20/K203258.pdf",
+      "file": "510k-K203258.pdf",
+      "product_code": "OEB",
+      "license": "FDA-published 510(k) decision letter and summary; not redistributed in this repo, downloaded by script"
+    },
+    {
+      "doc_id": "510K-K201501",
+      "kind": "510k_decision",
+      "title": "K201501 Veolity (MeVis Medical Solutions AG), cleared 2021-02-23",
+      "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf20/K201501.pdf",
+      "file": "510k-K201501.pdf",
+      "product_code": "OEB",
+      "license": "FDA-published 510(k) decision letter and summary; not redistributed in this repo, downloaded by script"
+    },
+    {
+      "doc_id": "510K-K192880",
+      "kind": "510k_decision",
+      "title": "K192880 InferRead Lung CT.AI (Beijing Infervision Technology Co., Ltd.), cleared 2020-07-02",
+      "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf19/K192880.pdf",
+      "file": "510k-K192880.pdf",
+      "product_code": "OEB",
+      "license": "FDA-published 510(k) decision letter and summary; not redistributed in this repo, downloaded by script"
+    }
+  ]
+}

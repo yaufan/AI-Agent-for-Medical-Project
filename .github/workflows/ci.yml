@@ -19,6 +19,28 @@ jobs:
       - name: erpqms tests
         run: python -m pytest -q packages/erpqms/tests
 
+  rag:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.11"}
+      - run: pip install "./packages/rag[pdf,test]"
+      - name: Unit tests (synthetic corpus only)
+        run: python -m pytest -q packages/rag/tests
+      - uses: actions/cache@v4
+        with:
+          path: data/raw/public
+          key: public-corpus-${{ hashFiles('data/corpus/public_manifest.json') }}
+      - name: Fetch public corpus (FDA guidance and 510(k) PDFs)
+        run: python scripts/fetch_public_corpus.py
+      - name: Quote checks against the PDFs
+        run: python -m pytest -q packages/rag/tests -k pdf_evidence
+      - name: Retrieval evaluation and gate (leaks must be zero; no regression against committed results)
+        run: |
+          python eval/run_retrieval.py --out /tmp/m1
+          python eval/check_gate.py --baseline results/m1 --candidate /tmp/m1
+
   erpqms-postgres:
     runs-on: ubuntu-latest
     services:

@@ -1,0 +1,10 @@
+{
+  "description": "Fictional users of Company M and their access groups. Everyone can read 'public'. In production these come from Keycloak / LDAP groups.",
+  "users": {
+    "qa_lin":         {"role": "品保工程師",        "groups": ["internal", "proj-a"]},
+    "svc_wang":       {"role": "服務工程師",        "groups": ["internal", "proj-a"]},
+    "rd_chen":        {"role": "研發工程師（2.0 專案）", "groups": ["internal", "proj-b"]},
+    "ra_huang":       {"role": "法規專員",          "groups": ["internal", "proj-a", "proj-b"]},
+    "contractor_lee": {"role": "外部顧問",          "groups": []}
+  }
+}
