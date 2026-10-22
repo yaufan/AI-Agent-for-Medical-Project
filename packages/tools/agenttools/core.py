@@ -108,8 +108,9 @@ class Registry:
 
 
 # Shared argument patterns: identifiers in the synthetic ERP/QMS, dates, free text.
-SITE_ID = {"type": "string", "pattern": r"H-[A-Z]", "maxLength": 3}
-DATE = {"type": "string", "pattern": r"\d{4}-\d{2}-\d{2}", "maxLength": 10}
-LOT_NO = {"type": "string", "pattern": r"[A-Z]{3}-[A-Z0-9]{2}-L\d{4}", "maxLength": 20}
-CAPA_ID = {"type": "string", "pattern": r"CAPA-\d{4}-\d{3}", "maxLength": 13}
+# Anchored with ^...$: some servers (llama.cpp) turn tool schemas into a grammar and require it.
+SITE_ID = {"type": "string", "pattern": r"^H-[A-Z]$", "maxLength": 3}
+DATE = {"type": "string", "pattern": r"^\d{4}-\d{2}-\d{2}$", "maxLength": 10}
+LOT_NO = {"type": "string", "pattern": r"^[A-Z]{3}-[A-Z0-9]{2}-L\d{4}$", "maxLength": 20}
+CAPA_ID = {"type": "string", "pattern": r"^CAPA-\d{4}-\d{3}$", "maxLength": 13}
 TEXT = {"type": "string", "maxLength": 2000}

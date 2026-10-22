@@ -127,6 +127,25 @@ BAD_CALLS = [
 ]
 
 
+def test_schema_patterns_are_anchored(env):
+    # llama.cpp compiles tool schemas into a grammar and rejects unanchored patterns (HTTP 400)
+    _, reg, _ = env
+    found = []
+
+    def walk(node):
+        if isinstance(node, dict):
+            if "pattern" in node:
+                found.append(node["pattern"])
+            for v in node.values():
+                walk(v)
+        elif isinstance(node, list):
+            for v in node:
+                walk(v)
+
+    walk(reg.specs())
+    assert found and all(p.startswith("^") and p.endswith("$") for p in found)
+
+
 @pytest.mark.parametrize("name,args", BAD_CALLS)
 def test_invalid_calls_are_rejected_before_running(env, name, args):
     _, _, guard = env

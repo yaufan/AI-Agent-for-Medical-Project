@@ -63,7 +63,7 @@ def build_registry(ctx: Context) -> Registry:
                   "customer-written text.", "read",
                   {"type": "object", "properties": {
                       "site_id": SITE_ID, "category": {"type": "string", "enum": CATEGORIES},
-                      "scanner_model": {"type": "string", "pattern": r"[A-C]-\d{2,3}", "maxLength": 6},
+                      "scanner_model": {"type": "string", "pattern": r"^[A-C]-\d{2,3}$", "maxLength": 6},
                       "since": DATE, "limit": {"type": "integer", "minimum": 1, "maximum": 50}}})
     def list_complaints(session: Session, site_id=None, category=None, scanner_model=None, since=None, limit=20):
         sql = ["SELECT c.complaint_id, c.site_id, c.received_at, c.category, c.severity, ct.model AS scanner_model,",
@@ -111,7 +111,7 @@ def build_registry(ctx: Context) -> Registry:
 
     @reg.register("sites_with_scanner_model", "Which sites have a given CT scanner model, and when it was installed.",
                   "read", {"type": "object", "properties": {
-                      "model": {"type": "string", "pattern": r"[A-C]-\d{2,3}", "maxLength": 6}}, "required": ["model"]})
+                      "model": {"type": "string", "pattern": r"^[A-C]-\d{2,3}$", "maxLength": 6}}, "required": ["model"]})
     def sites_with_scanner_model(session: Session, model):
         return {"sites": _rows(ctx.db.execute(
             "SELECT s.site_id, s.name, ct.scanner_id, ct.installed_at, ct.default_slice_thickness_mm "
@@ -119,7 +119,7 @@ def build_registry(ctx: Context) -> Registry:
             (model,)))}
 
     @reg.register("software_release", "Input specification and status of a NoduleAssist software version.", "read",
-                  {"type": "object", "properties": {"version": {"type": "string", "pattern": r"\d\.\d", "maxLength": 3}},
+                  {"type": "object", "properties": {"version": {"type": "string", "pattern": r"^\d\.\d$", "maxLength": 3}},
                    "required": ["version"]})
     def software_release(session: Session, version):
         r = _rows(ctx.db.execute("SELECT * FROM software_releases WHERE version = ?", (version,)))
@@ -152,8 +152,8 @@ def build_registry(ctx: Context) -> Registry:
     # ---------------- public regulatory APIs (read) ----------------
     @reg.register("search_510k", "Search FDA 510(k) clearances by product code (e.g. OEB) or device name.", "read",
                   {"type": "object", "properties": {
-                      "product_code": {"type": "string", "pattern": r"[A-Z]{3}", "maxLength": 3},
-                      "device_name": {"type": "string", "pattern": r"[A-Za-z0-9 .\-]{2,60}", "maxLength": 60},
+                      "product_code": {"type": "string", "pattern": r"^[A-Z]{3}$", "maxLength": 3},
+                      "device_name": {"type": "string", "pattern": r"^[A-Za-z0-9 .\-]{2,60}$", "maxLength": 60},
                       "limit": {"type": "integer", "minimum": 1, "maximum": 20}}})
     def search_510k(session: Session, product_code=None, device_name=None, limit=10):
         if not product_code and not device_name:
@@ -164,7 +164,7 @@ def build_registry(ctx: Context) -> Registry:
         return {"untrusted": [{k: r.get(k) for k in keep} for r in data.get("results", [])]}
 
     @reg.register("device_recalls", "FDA device recalls for a product code.", "read",
-                  {"type": "object", "properties": {"product_code": {"type": "string", "pattern": r"[A-Z]{3}",
+                  {"type": "object", "properties": {"product_code": {"type": "string", "pattern": r"^[A-Z]{3}$",
                                                                      "maxLength": 3},
                                                     "limit": {"type": "integer", "minimum": 1, "maximum": 20}},
                    "required": ["product_code"]})
@@ -174,7 +174,7 @@ def build_registry(ctx: Context) -> Registry:
         return {"untrusted": [{k: r.get(k) for k in keep} for r in data.get("results", [])]}
 
     @reg.register("search_clinical_trials", "Search ClinicalTrials.gov studies by free-text term.", "read",
-                  {"type": "object", "properties": {"term": {"type": "string", "pattern": r"[A-Za-z0-9 .,\-]{2,100}",
+                  {"type": "object", "properties": {"term": {"type": "string", "pattern": r"^[A-Za-z0-9 .,\-]{2,100}$",
                                                              "maxLength": 100},
                                                     "limit": {"type": "integer", "minimum": 1, "maximum": 20}},
                    "required": ["term"]})
@@ -196,7 +196,7 @@ def build_registry(ctx: Context) -> Registry:
                   {"type": "object", "properties": {
                       "title": {"type": "string", "maxLength": 120}, "description": TEXT,
                       "related_complaints": {"type": "array", "maxItems": 20,
-                                             "items": {"type": "string", "pattern": r"CMP-\d{4}-\d{4}", "maxLength": 13}},
+                                             "items": {"type": "string", "pattern": r"^CMP-\d{4}-\d{4}$", "maxLength": 13}},
                       "related_capa": CAPA_ID},
                    "required": ["title", "description"]})
     def draft_capa(session: Session, title, description, related_complaints=(), related_capa=None, _provenance=None):
