@@ -195,3 +195,28 @@ def test_pdf_evidence_quotes_exist_and_survive_chunking():
         chunks = chunk_corpus(docs, strategy)
         normed = [norm(c.text) for c in chunks]
         assert all(s for s in evidence_sets(chunks, items, normed)), strategy
+
+
+# ---------- rerank server contract ----------
+
+def test_rerank_server_matches_client_contract():
+    pytest.importorskip("fastapi")
+    import httpx
+    from fastapi.testclient import TestClient
+
+    sys.path.insert(0, str(ROOT / "scripts"))
+    from rerank_server import create_app
+    from rag.dense import HTTPReranker
+
+    class FakeCrossEncoder:  # longer document = more relevant; enough to check the plumbing
+        def predict(self, pairs):
+            return [len(doc) for _, doc in pairs]
+
+    client = TestClient(create_app(FakeCrossEncoder(), "fake"))
+    docs = ["a", "ccc", "bb"]
+    out = client.post("/rerank", json={"query": "q", "documents": docs}).json()
+    assert [r["index"] for r in out["results"]] == [1, 2, 0]
+
+    transport = httpx.MockTransport(lambda req: httpx.Response(200, json=client.post(
+        "/rerank", content=req.content, headers={"content-type": "application/json"}).json()))
+    assert HTTPReranker("http://rerank", "fake", transport=transport).scores("q", docs) == [1.0, 3.0, 2.0]

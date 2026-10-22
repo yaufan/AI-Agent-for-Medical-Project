@@ -89,8 +89,8 @@
 make install corpus
 ollama pull bge-m3
 python eval/run_retrieval.py --methods bm25 dense hybrid --embed-url http://localhost:11434/v1 --embed-model bge-m3
-# 重排序：用 vLLM 或 TEI 提供 /rerank，例如
-#   vllm serve BAAI/bge-reranker-v2-m3 --port 8001
+# 重排序：Ollama 沒有 /rerank，用 scripts/rerank_server.py（sentence-transformers）或 vLLM 提供，例如
+#   python scripts/rerank_server.py --model BAAI/bge-reranker-v2-m3 --port 8001 --device cuda
 python eval/run_retrieval.py --methods hybrid --embed-url http://localhost:11434/v1 --embed-model bge-m3 \
     --rerank-url http://localhost:8001 --rerank-model BAAI/bge-reranker-v2-m3
 python eval/report.py
