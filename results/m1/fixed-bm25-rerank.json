@@ -1,0 +1,336 @@
+{
+  "config": {
+    "chunking": "fixed",
+    "method": "bm25",
+    "rerank": true,
+    "k": 10,
+    "candidates": 50,
+    "chunks": 876,
+    "embed_model": null,
+    "rerank_model": "BAAI/bge-reranker-v2-m3"
+  },
+  "corpus": {
+    "markdown_docs": 12,
+    "pdf_docs": 16,
+    "pdf_missing": [],
+    "pii_masked": 99
+  },
+  "acl": {
+    "pre": {
+      "by_type": {
+        "code": {
+          "n": 11,
+          "mean_returned": 8.82,
+          "recall@1": 0.727,
+          "recall@5": 0.727,
+          "recall@10": 0.727,
+          "mrr": 0.727,
+          "ndcg@10": 0.727,
+          "questions_with_leak": 0,
+          "leaked_chunks": 0
+        },
+        "cross_lingual": {
+          "n": 14,
+          "mean_returned": 9.79,
+          "recall@1": 0.5,
+          "recall@5": 0.571,
+          "recall@10": 0.571,
+          "mrr": 0.536,
+          "ndcg@10": 0.545,
+          "questions_with_leak": 0,
+          "leaked_chunks": 0
+        },
+        "fact": {
+          "n": 32,
+          "mean_returned": 8.47,
+          "recall@1": 0.844,
+          "recall@5": 0.969,
+          "recall@10": 0.969,
+          "mrr": 0.906,
+          "ndcg@10": 0.924,
+          "questions_with_leak": 0,
+          "leaked_chunks": 0
+        },
+        "table": {
+          "n": 14,
+          "mean_returned": 7.93,
+          "recall@1": 0.929,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "mrr": 0.964,
+          "ndcg@10": 0.972,
+          "questions_with_leak": 0,
+          "leaked_chunks": 0
+        },
+        "unanswerable": {
+          "n": 8,
+          "mean_returned": 9.5,
+          "questions_with_leak": 0,
+          "leaked_chunks": 0
+        },
+        "unauthorized": {
+          "n": 10,
+          "mean_returned": 7.0,
+          "questions_with_leak": 0,
+          "leaked_chunks": 0,
+          "answer_chunk_leaked": 0
+        }
+      },
+      "answerable": {
+        "n": 71,
+        "recall@1": 0.775,
+        "recall@5": 0.859,
+        "recall@10": 0.859,
+        "mrr": 0.817,
+        "ndcg@10": 0.828
+      },
+      "leaks": {
+        "questions_with_leak": 0,
+        "leaked_chunks": 0
+      },
+      "latency_ms": {
+        "acl_ms": {
+          "p50": 0.057,
+          "p95": 0.077
+        },
+        "bm25_ms": {
+          "p50": 0.214,
+          "p95": 0.718
+        },
+        "fusion_ms": {
+          "p50": 0.004,
+          "p95": 0.011
+        },
+        "rerank_ms": {
+          "p50": 1056.298,
+          "p95": 1559.878
+        },
+        "total_ms": {
+          "p50": 1056.694,
+          "p95": 1560.288
+        }
+      },
+      "top1_score_median": {
+        "unanswerable": 0.2402,
+        "fact": 0.986,
+        "table": 0.9686,
+        "cross_lingual": 0.851,
+        "code": 0.9799
+      }
+    },
+    "post": {
+      "by_type": {
+        "code": {
+          "n": 11,
+          "mean_returned": 8.36,
+          "recall@1": 0.727,
+          "recall@5": 0.727,
+          "recall@10": 0.727,
+          "mrr": 0.727,
+          "ndcg@10": 0.727,
+          "questions_with_leak": 0,
+          "leaked_chunks": 0
+        },
+        "cross_lingual": {
+          "n": 14,
+          "mean_returned": 9.79,
+          "recall@1": 0.5,
+          "recall@5": 0.571,
+          "recall@10": 0.571,
+          "mrr": 0.536,
+          "ndcg@10": 0.545,
+          "questions_with_leak": 0,
+          "leaked_chunks": 0
+        },
+        "fact": {
+          "n": 32,
+          "mean_returned": 8.22,
+          "recall@1": 0.844,
+          "recall@5": 0.969,
+          "recall@10": 0.969,
+          "mrr": 0.906,
+          "ndcg@10": 0.924,
+          "questions_with_leak": 0,
+          "leaked_chunks": 0
+        },
+        "table": {
+          "n": 14,
+          "mean_returned": 7.5,
+          "recall@1": 0.929,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "mrr": 0.964,
+          "ndcg@10": 0.972,
+          "questions_with_leak": 0,
+          "leaked_chunks": 0
+        },
+        "unanswerable": {
+          "n": 8,
+          "mean_returned": 9.5,
+          "questions_with_leak": 0,
+          "leaked_chunks": 0
+        },
+        "unauthorized": {
+          "n": 10,
+          "mean_returned": 4.8,
+          "questions_with_leak": 0,
+          "leaked_chunks": 0,
+          "answer_chunk_leaked": 0
+        }
+      },
+      "answerable": {
+        "n": 71,
+        "recall@1": 0.775,
+        "recall@5": 0.859,
+        "recall@10": 0.859,
+        "mrr": 0.817,
+        "ndcg@10": 0.828
+      },
+      "leaks": {
+        "questions_with_leak": 0,
+        "leaked_chunks": 0
+      },
+      "latency_ms": {
+        "acl_ms": {
+          "p50": 0.056,
+          "p95": 0.076
+        },
+        "bm25_ms": {
+          "p50": 0.23,
+          "p95": 0.789
+        },
+        "fusion_ms": {
+          "p50": 0.004,
+          "p95": 0.01
+        },
+        "rerank_ms": {
+          "p50": 1059.984,
+          "p95": 1561.388
+        },
+        "total_ms": {
+          "p50": 1060.386,
+          "p95": 1561.687
+        }
+      },
+      "top1_score_median": {
+        "unanswerable": 0.2402,
+        "fact": 0.986,
+        "table": 0.9686,
+        "cross_lingual": 0.851,
+        "code": 0.9799
+      }
+    },
+    "none": {
+      "by_type": {
+        "code": {
+          "n": 11,
+          "mean_returned": 8.91,
+          "recall@1": 0.727,
+          "recall@5": 0.727,
+          "recall@10": 0.727,
+          "mrr": 0.727,
+          "ndcg@10": 0.727,
+          "questions_with_leak": 3,
+          "leaked_chunks": 6
+        },
+        "cross_lingual": {
+          "n": 14,
+          "mean_returned": 9.79,
+          "recall@1": 0.5,
+          "recall@5": 0.571,
+          "recall@10": 0.571,
+          "mrr": 0.536,
+          "ndcg@10": 0.545,
+          "questions_with_leak": 0,
+          "leaked_chunks": 0
+        },
+        "fact": {
+          "n": 32,
+          "mean_returned": 9.03,
+          "recall@1": 0.844,
+          "recall@5": 0.969,
+          "recall@10": 0.969,
+          "mrr": 0.906,
+          "ndcg@10": 0.924,
+          "questions_with_leak": 16,
+          "leaked_chunks": 26
+        },
+        "table": {
+          "n": 14,
+          "mean_returned": 8.57,
+          "recall@1": 0.929,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "mrr": 0.964,
+          "ndcg@10": 0.972,
+          "questions_with_leak": 9,
+          "leaked_chunks": 15
+        },
+        "unanswerable": {
+          "n": 8,
+          "mean_returned": 9.5,
+          "questions_with_leak": 0,
+          "leaked_chunks": 0
+        },
+        "unauthorized": {
+          "n": 10,
+          "mean_returned": 9.2,
+          "questions_with_leak": 10,
+          "leaked_chunks": 44,
+          "answer_chunk_leaked": 10
+        }
+      },
+      "answerable": {
+        "n": 71,
+        "recall@1": 0.775,
+        "recall@5": 0.859,
+        "recall@10": 0.859,
+        "mrr": 0.817,
+        "ndcg@10": 0.828
+      },
+      "leaks": {
+        "questions_with_leak": 38,
+        "leaked_chunks": 91
+      },
+      "latency_ms": {
+        "acl_ms": {
+          "p50": 0.0,
+          "p95": 0.0
+        },
+        "bm25_ms": {
+          "p50": 0.252,
+          "p95": 0.741
+        },
+        "fusion_ms": {
+          "p50": 0.004,
+          "p95": 0.012
+        },
+        "rerank_ms": {
+          "p50": 1056.366,
+          "p95": 1555.094
+        },
+        "total_ms": {
+          "p50": 1056.931,
+          "p95": 1555.545
+        }
+      },
+      "top1_score_median": {
+        "unanswerable": 0.2402,
+        "fact": 0.986,
+        "table": 0.9686,
+        "cross_lingual": 0.851,
+        "code": 0.9799
+      }
+    }
+  },
+  "revocation": {
+    "user": "ra_huang",
+    "revoked_group": "proj-b",
+    "questions": 35,
+    "chunks_from_group_before": 30,
+    "chunks_from_group_after": 0,
+    "effective_on_next_query": true,
+    "revoke_plus_rerun_ms": 33.2,
+    "reindex_needed": false
+  }
+}

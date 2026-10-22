@@ -1,0 +1,336 @@
+{
+  "config": {
+    "chunking": "structured",
+    "method": "dense",
+    "rerank": true,
+    "k": 10,
+    "candidates": 50,
+    "chunks": 954,
+    "embed_model": "bge-m3",
+    "rerank_model": "BAAI/bge-reranker-v2-m3"
+  },
+  "corpus": {
+    "markdown_docs": 12,
+    "pdf_docs": 16,
+    "pdf_missing": [],
+    "pii_masked": 99
+  },
+  "acl": {
+    "pre": {
+      "by_type": {
+        "code": {
+          "n": 11,
+          "mean_returned": 10.0,
+          "recall@1": 0.818,
+          "recall@5": 0.909,
+          "recall@10": 0.909,
+          "mrr": 0.864,
+          "ndcg@10": 0.864,
+          "questions_with_leak": 0,
+          "leaked_chunks": 0
+        },
+        "cross_lingual": {
+          "n": 14,
+          "mean_returned": 10.0,
+          "recall@1": 0.714,
+          "recall@5": 0.857,
+          "recall@10": 1.0,
+          "mrr": 0.795,
+          "ndcg@10": 0.843,
+          "questions_with_leak": 0,
+          "leaked_chunks": 0
+        },
+        "fact": {
+          "n": 32,
+          "mean_returned": 10.0,
+          "recall@1": 0.844,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "mrr": 0.922,
+          "ndcg@10": 0.939,
+          "questions_with_leak": 0,
+          "leaked_chunks": 0
+        },
+        "table": {
+          "n": 14,
+          "mean_returned": 10.0,
+          "recall@1": 0.929,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "mrr": 0.964,
+          "ndcg@10": 0.974,
+          "questions_with_leak": 0,
+          "leaked_chunks": 0
+        },
+        "unanswerable": {
+          "n": 8,
+          "mean_returned": 10.0,
+          "questions_with_leak": 0,
+          "leaked_chunks": 0
+        },
+        "unauthorized": {
+          "n": 10,
+          "mean_returned": 10.0,
+          "questions_with_leak": 0,
+          "leaked_chunks": 0,
+          "answer_chunk_leaked": 0
+        }
+      },
+      "answerable": {
+        "n": 71,
+        "recall@1": 0.831,
+        "recall@5": 0.958,
+        "recall@10": 0.986,
+        "mrr": 0.896,
+        "ndcg@10": 0.915
+      },
+      "leaks": {
+        "questions_with_leak": 0,
+        "leaked_chunks": 0
+      },
+      "latency_ms": {
+        "acl_ms": {
+          "p50": 0.135,
+          "p95": 0.236
+        },
+        "dense_ms": {
+          "p50": 4.505,
+          "p95": 10.184
+        },
+        "fusion_ms": {
+          "p50": 0.012,
+          "p95": 0.026
+        },
+        "rerank_ms": {
+          "p50": 2385.802,
+          "p95": 2625.445
+        },
+        "total_ms": {
+          "p50": 2390.767,
+          "p95": 2630.499
+        }
+      },
+      "top1_score_median": {
+        "unanswerable": 0.4389,
+        "fact": 0.9962,
+        "table": 0.9624,
+        "cross_lingual": 0.9805,
+        "code": 0.9901
+      }
+    },
+    "post": {
+      "by_type": {
+        "code": {
+          "n": 11,
+          "mean_returned": 9.91,
+          "recall@1": 0.818,
+          "recall@5": 0.909,
+          "recall@10": 0.909,
+          "mrr": 0.864,
+          "ndcg@10": 0.864,
+          "questions_with_leak": 0,
+          "leaked_chunks": 0
+        },
+        "cross_lingual": {
+          "n": 14,
+          "mean_returned": 10.0,
+          "recall@1": 0.714,
+          "recall@5": 0.857,
+          "recall@10": 1.0,
+          "mrr": 0.795,
+          "ndcg@10": 0.843,
+          "questions_with_leak": 0,
+          "leaked_chunks": 0
+        },
+        "fact": {
+          "n": 32,
+          "mean_returned": 9.72,
+          "recall@1": 0.844,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "mrr": 0.922,
+          "ndcg@10": 0.939,
+          "questions_with_leak": 0,
+          "leaked_chunks": 0
+        },
+        "table": {
+          "n": 14,
+          "mean_returned": 9.14,
+          "recall@1": 0.929,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "mrr": 0.964,
+          "ndcg@10": 0.974,
+          "questions_with_leak": 0,
+          "leaked_chunks": 0
+        },
+        "unanswerable": {
+          "n": 8,
+          "mean_returned": 10.0,
+          "questions_with_leak": 0,
+          "leaked_chunks": 0
+        },
+        "unauthorized": {
+          "n": 10,
+          "mean_returned": 4.4,
+          "questions_with_leak": 0,
+          "leaked_chunks": 0,
+          "answer_chunk_leaked": 0
+        }
+      },
+      "answerable": {
+        "n": 71,
+        "recall@1": 0.831,
+        "recall@5": 0.958,
+        "recall@10": 0.986,
+        "mrr": 0.896,
+        "ndcg@10": 0.915
+      },
+      "leaks": {
+        "questions_with_leak": 0,
+        "leaked_chunks": 0
+      },
+      "latency_ms": {
+        "acl_ms": {
+          "p50": 0.13,
+          "p95": 0.245
+        },
+        "dense_ms": {
+          "p50": 4.049,
+          "p95": 7.731
+        },
+        "fusion_ms": {
+          "p50": 0.011,
+          "p95": 0.024
+        },
+        "rerank_ms": {
+          "p50": 2352.477,
+          "p95": 2686.159
+        },
+        "total_ms": {
+          "p50": 2356.603,
+          "p95": 2690.13
+        }
+      },
+      "top1_score_median": {
+        "unanswerable": 0.4389,
+        "fact": 0.9962,
+        "table": 0.9624,
+        "cross_lingual": 0.9805,
+        "code": 0.9901
+      }
+    },
+    "none": {
+      "by_type": {
+        "code": {
+          "n": 11,
+          "mean_returned": 10.0,
+          "recall@1": 0.818,
+          "recall@5": 0.909,
+          "recall@10": 0.909,
+          "mrr": 0.864,
+          "ndcg@10": 0.864,
+          "questions_with_leak": 1,
+          "leaked_chunks": 1
+        },
+        "cross_lingual": {
+          "n": 14,
+          "mean_returned": 10.0,
+          "recall@1": 0.714,
+          "recall@5": 0.857,
+          "recall@10": 1.0,
+          "mrr": 0.795,
+          "ndcg@10": 0.843,
+          "questions_with_leak": 0,
+          "leaked_chunks": 0
+        },
+        "fact": {
+          "n": 32,
+          "mean_returned": 10.0,
+          "recall@1": 0.844,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "mrr": 0.922,
+          "ndcg@10": 0.939,
+          "questions_with_leak": 5,
+          "leaked_chunks": 9
+        },
+        "table": {
+          "n": 14,
+          "mean_returned": 10.0,
+          "recall@1": 0.929,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "mrr": 0.964,
+          "ndcg@10": 0.974,
+          "questions_with_leak": 6,
+          "leaked_chunks": 12
+        },
+        "unanswerable": {
+          "n": 8,
+          "mean_returned": 10.0,
+          "questions_with_leak": 0,
+          "leaked_chunks": 0
+        },
+        "unauthorized": {
+          "n": 10,
+          "mean_returned": 10.0,
+          "questions_with_leak": 10,
+          "leaked_chunks": 56,
+          "answer_chunk_leaked": 10
+        }
+      },
+      "answerable": {
+        "n": 71,
+        "recall@1": 0.831,
+        "recall@5": 0.958,
+        "recall@10": 0.986,
+        "mrr": 0.896,
+        "ndcg@10": 0.915
+      },
+      "leaks": {
+        "questions_with_leak": 22,
+        "leaked_chunks": 78
+      },
+      "latency_ms": {
+        "acl_ms": {
+          "p50": 0.0,
+          "p95": 0.001
+        },
+        "dense_ms": {
+          "p50": 1.247,
+          "p95": 6.329
+        },
+        "fusion_ms": {
+          "p50": 0.009,
+          "p95": 0.02
+        },
+        "rerank_ms": {
+          "p50": 1267.629,
+          "p95": 2541.988
+        },
+        "total_ms": {
+          "p50": 1268.73,
+          "p95": 2546.457
+        }
+      },
+      "top1_score_median": {
+        "unanswerable": 0.4389,
+        "fact": 0.9962,
+        "table": 0.9624,
+        "cross_lingual": 0.9805,
+        "code": 0.9901
+      }
+    }
+  },
+  "revocation": {
+    "user": "ra_huang",
+    "revoked_group": "proj-b",
+    "questions": 35,
+    "chunks_from_group_before": 7,
+    "chunks_from_group_after": 0,
+    "effective_on_next_query": true,
+    "revoke_plus_rerun_ms": 48.94,
+    "reindex_needed": false
+  }
+}
