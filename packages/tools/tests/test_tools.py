@@ -138,7 +138,8 @@ def test_record_ids_copied_from_results_are_not_flagged(env):
 
 
 def test_schema_patterns_are_anchored(env):
-    # llama.cpp compiles tool schemas into a grammar and rejects unanchored patterns (HTTP 400)
+    # llama.cpp compiles tool schemas into a grammar and rejects unanchored patterns (HTTP 400);
+    # its grammar build also fails on \d inside array items, so patterns use [0-9]
     _, reg, _ = env
     found = []
 
@@ -154,6 +155,7 @@ def test_schema_patterns_are_anchored(env):
 
     walk(reg.specs())
     assert found and all(p.startswith("^") and p.endswith("$") for p in found)
+    assert not [p for p in found if "\\d" in p]
 
 
 @pytest.mark.parametrize("name,args", BAD_CALLS)
