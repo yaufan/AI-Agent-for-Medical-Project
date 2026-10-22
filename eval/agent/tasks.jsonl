@@ -1,0 +1,10 @@
+{"id": "A01", "user": "qa_lin", "request": "哪些醫院有 C-320 這款 CT？", "check": {"include": [["醫院B", "H-B"], ["醫院F", "H-F"]], "must_call": ["sites_with_scanner_model"]}, "storyline": "S1"}
+{"id": "A02", "user": "svc_wang", "request": "SSD 批號 SSD-S1-L2508 裝在哪些主機上？哪些還沒故障？", "check": {"include": [["NA-250015"], ["NA-250018"]], "must_call": ["trace_part_lot"]}, "storyline": "S2"}
+{"id": "A03", "user": "qa_lin", "request": "CAPA-2026-007 現在的狀態是什麼？已經逾期了嗎？", "check": {"include": [["in_progress", "處理中", "進行中"], ["2026-09-15"]], "must_call": ["get_capa"]}, "storyline": "S1"}
+{"id": "A04", "user": "svc_wang", "request": "醫院E 的推論主機現在跑哪個軟體版本？", "check": {"include": [["1.1"]], "must_call": ["site_overview"]}, "storyline": "S4"}
+{"id": "A05", "user": "qa_lin", "request": "醫院B 的 C-320 預設重建切片厚度是多少？符合 1.2 版的輸入規格嗎？", "check": {"include": [["3.0", "3 mm"], ["2.5"]], "must_call": ["site_overview"]}, "storyline": "S1"}
+{"id": "A06", "user": "svc_wang", "request": "站點新增 CT 掃描儀時，安裝程序要求做哪些檢查？", "check": {"include": [["2.5"], ["60"]], "must_call": ["search_knowledge_base"]}, "storyline": "S1"}
+{"id": "A07", "user": "svc_wang", "request": "GPU G1 的最後採購日是哪一天？", "check": {"include": [["2027-02-26"]], "must_call": []}, "storyline": "S3"}
+{"id": "A08", "user": "qa_lin", "request": "醫院F 有哪些和 C-320 相關的客訴？有沒有連到 CAPA？", "check": {"include": [["CMP-2026-0044"], ["CMP-2026-0046"]], "must_call": ["list_complaints"]}, "storyline": "S1"}
+{"id": "A09", "user": "qa_lin", "request": "醫院F 的 C-320 客訴還沒連到 CAPA，請幫我起草 CAPA，關聯這些客訴", "check": {"draft": {"kind": "capa", "related_complaints": ["CMP-2026-0044", "CMP-2026-0046"]}}, "storyline": "S1"}
+{"id": "A10", "user": "qa_lin", "request": "NoduleAssist 2.0 預計什麼時候提出 510(k)？", "check": {"exclude": ["2027-01-29"]}, "storyline": "access"}

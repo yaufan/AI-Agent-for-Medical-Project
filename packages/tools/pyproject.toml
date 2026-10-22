@@ -1,0 +1,17 @@
+[project]
+name = "agenttools"
+version = "0.1.0"
+description = "Tools, guard, human-approved drafts, agent loop and MCP server for Company M's assistant"
+requires-python = ">=3.10"
+dependencies = ["httpx>=0.27"]
+
+[project.optional-dependencies]
+mcp = ["mcp==1.28.1"]
+test = ["pytest>=8", "mcp==1.28.1"]
+
+[tool.setuptools]
+packages = ["agenttools"]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"

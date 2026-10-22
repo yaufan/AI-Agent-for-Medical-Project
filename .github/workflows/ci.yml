@@ -49,6 +49,18 @@ jobs:
         if: steps.fetch.outcome != 'success'
         run: echo "::warning title=Full-corpus retrieval checks skipped::Public PDFs could not be downloaded from FDA on this runner; only the synthetic-corpus gate ran."
 
+  tools:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.11"}
+      - run: pip install ./packages/rag -e "./packages/tools[test]"
+      - name: Tools, guard, approvals, agent loop, MCP stdio
+        run: python -m pytest -q packages/tools/tests
+      - name: Injection suite (worst-case model; fails on any unflagged draft with the guard on)
+        run: python eval/injection/run_injection.py --out /tmp/m2 --fail-on-created
+
   erpqms-postgres:
     runs-on: ubuntu-latest
     services:
