@@ -76,7 +76,7 @@ v0.1 → v0.2 的變更：題材定為「肺結節 AI 輔助偵測軟體公司�
 |---|---|---|---|
 | **M0** 基礎 | 10/21–10/23 | repo 結構、CI、P1／P2 併入、合成 ERP＋QMS、資料目錄 | 測試數、CI 是否全綠 |
 | **M1** 檢索（完成，見 `results/m1/`） | 10/24–10/30 | 語料（公開群組＋兩個合成產品專案群組）、Docling 解析、依標題切塊、混合檢索、reranker、群組權限過濾；題庫依題型分類（事實、表格數值、跨語、產品代碼與條號、不可回答、越權） | Recall@1／5／10、MRR、nDCG（依題型拆開）；越權題洩漏筆數；權限變更生效時間；各階段 P50／P95 延遲；引用 precision／recall；拒答率；自動評分與人工標註的一致性 |
-| **M2** 工具與安全 | 10/31–11/6 | ERP／QMS 唯讀 MCP 工具（2–3 個參數化查詢）、寫入只做草稿並需核准、openFDA／ClinicalTrials.gov 工具、P2 影像工具、固定 workflow 與 agent 對照、注入樣本、Langfuse | 任務成功率、工具呼叫次數、token 與延遲；非法參數被拒比例；注入樣本觸發未授權動作的筆數（防禦前後） |
+| **M2** 工具與安全（完成，見 `results/m2/`；P2 影像工具與 Langfuse 未做） | 10/31–11/6 | ERP／QMS 唯讀 MCP 工具（2–3 個參數化查詢）、寫入只做草稿並需核准、openFDA／ClinicalTrials.gov 工具、P2 影像工具、固定 workflow 與 agent 對照、注入樣本、Langfuse | 任務成功率、工具呼叫次數、token 與延遲；非法參數被拒比例；注入樣本觸發未授權動作的筆數（防禦前後） |
 | **M3** 模型與部署 | 11/7–11/11 | 同一題庫比較 2–3 個授權清楚的開源模型（含量化）；vLLM 與 Ollama 並發比較；gateway 分級路由；FastAPI＋測試＋CI；kind 部署；模型准入說明 | 各模型正確率、引用有效率、拒答率；TTFT／TPOT p50／p99；延遲條件下的最大並發；VRAM；部署與回滾秒數；分級錯誤時被擋與漏放的筆數 |
 | **M4** 展示 | 之後 | Chainlit 介面、四個場景端到端示範、Text-to-SQL 儀表板、domain pack 切換（半導體 datasheet） | Text-to-SQL 對照 `scenarios.sql` 的正確率 |
 

@@ -21,9 +21,9 @@
 |---|---|---|
 | M0 | repo 結構、CI、影像模組併入、合成 ERP＋QMS、資料目錄 | 完成 |
 | M1 | 附權限過濾的混合檢索與評估 | 完成（[結果](results/m1/)）：向量＋重排序 Recall@10 0.986；Qdrant／pgvector、Docling 比較與題庫人工審查未做 |
-| M2 | MCP 工具、人工核准、注入測試 | 進行中：工具、守門、核准、MCP、最壞情況注入測試完成；真實模型評估未跑 |
+| M2 | MCP 工具、人工核准、注入測試 | 完成：Qwen3.8-27B 情境任務 10/10、注入 23 題未照做（1 題逾時）；固定流程對照 9/10；見 `results/m2/` |
 | M3 | 地端模型比較、gateway 分級路由、部署 | 未開始 |
-| M4 | 示範介面與端到端場景 | 未開始 |
+| M4 | 示範介面、端到端情境 | 進行中：Chainlit 介面（`apps/assistant-ui/`）完成；Text-to-SQL 儀表板未做 |
 
 ## 結構
 
@@ -33,7 +33,8 @@
 | [`services/cad-service/`](services/cad-service/) | 推論服務：非同步工作、輸入 QC、PSI 漂移監控、Prometheus 指標、Docker／K8s、C++ 推論 |
 | [`packages/erpqms/`](packages/erpqms/) | 公司 M 的合成 ERP＋QMS 資料庫，內含三條可驗證的故事線與參考查詢 |
 | [`packages/rag/`](packages/rag/) | 附權限過濾的檢索（BM25、向量、RRF、重排序）與以證據原文為準的評估 |
-| [`packages/tools/`](packages/tools/) | 助理的工具、守門、人工核准草稿、agent 迴圈、MCP 伺服器 |
+| [`packages/tools/`](packages/tools/) | 助理的工具、守門、人工核准草稿、agent 迴圈、固定流程、MCP 伺服器 |
+| [`apps/assistant-ui/`](apps/assistant-ui/) | Chainlit 示範介面：切換身分、顯示工具呼叫、主管核准草稿、稽核紀錄 |
 | [`data/corpus/`](data/corpus/) | 知識庫：公司 M 的合成內部文件，以及公開文件清單（PDF 由腳本下載，不放進 repo） |
 | [`eval/`](eval/) | 題庫、使用者與群組、評估與 CI 閘門 |
 | [`results/`](results/) | 各里程碑的實驗結果與分析 |
