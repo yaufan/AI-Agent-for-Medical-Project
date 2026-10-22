@@ -16,6 +16,15 @@
 | TFDA 公告與指引 | 知識庫：中文法規（跨語題型） | www.fda.gov.tw | 要確認是否適用「政府資料開放授權條款」 | 待確認 |
 | GPU／SSD datasheet | 場景 3：替代料比較 | 各廠商網站 | 每份不同，多數不允許轉載 | 待確認；不確定的只放連結與摘要，不放全文 |
 
+## 模型
+
+| 模型 | 用途 | 來源 | 授權（依模型頁面標示，使用前再確認） |
+|---|---|---|---|
+| bge-m3 | 向量檢索 | Ollama `bge-m3`（原始模型 BAAI/bge-m3） | MIT |
+| bge-reranker-v2-m3 | 重排序 | Hugging Face `BAAI/bge-reranker-v2-m3` | Apache-2.0 |
+
+模型檔不放進 repo；版本與 digest 記在 `results/m1/env-gx10-01.md`。
+
 ## 不放進知識庫的資料
 
 | 資料 | 原因 | 處理方式 |

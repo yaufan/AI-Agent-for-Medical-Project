@@ -30,5 +30,5 @@ CI 的 GitHub 主機常被 FDA 網站擋下載：內部語料的閘門每次都�
 
 ## 環境
 - 雲端環境：沒有 GPU、連不到 Hugging Face；PostgreSQL 16 已安裝；openFDA、ClinicalTrials.gov、FDA 網站可連線。
-- 模型下載與 GPU 實驗在使用者本機做。
+- 模型下載與 GPU 實驗在使用者本機 gx10-01 做（GB10，CPU 與 GPU 共用記憶體，機器上還有其他工作）：一次只載入一個模型、可用記憶體低於 16 GB 就暫停、不碰不是自己啟動的程序。gx10-01 用 repo 專用的部署金鑰推送（`~/.ssh/ai_agent_medical`，需搭配 `-F /dev/null`）。
 - 慣例：介面與文件繁體中文、附英文摘要；程式碼與 commit message 英文。

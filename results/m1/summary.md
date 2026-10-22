@@ -98,7 +98,7 @@
 | structured-hybrid-rerank | ra_huang | proj-b | 29 | 0 | 是 | 否 |
 | structured-hybrid | ra_huang | proj-b | 29 | 0 | 是 | 否 |
 
-## 延遲（毫秒，權限模式 pre，單執行緒 CPU）
+## 延遲（毫秒，權限模式 pre；BM25 在 CPU，dense 與 rerank 含呼叫模型服務的時間，見 env-gx10-01.md）
 
 | 設定 | 階段 | P50 | P95 |
 |---|---|---|---|

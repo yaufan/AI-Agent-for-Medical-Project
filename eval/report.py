@@ -45,7 +45,7 @@ def main(out_dir: Path = ROOT / "results/m1"):
         lines.append(f"| {name} | {v['user']} | {v['revoked_group']} | {v['chunks_from_group_before']} | "
                      f"{v['chunks_from_group_after']} | {'是' if v['effective_on_next_query'] else '否'} | "
                      f"{'是' if v['reindex_needed'] else '否'} |")
-    lines += ["", "## 延遲（毫秒，權限模式 pre，單執行緒 CPU）", "", "| 設定 | 階段 | P50 | P95 |", "|---|---|---|---|"]
+    lines += ["", "## 延遲（毫秒，權限模式 pre；BM25 在 CPU，dense 與 rerank 含呼叫模型服務的時間，見 env-gx10-01.md）", "", "| 設定 | 階段 | P50 | P95 |", "|---|---|---|---|"]
     for name, r in results.items():
         for stage, v in r["acl"]["pre"]["latency_ms"].items():
             lines.append(f"| {name} | {stage} | {v['p50']:.3f} | {v['p95']:.3f} |")
