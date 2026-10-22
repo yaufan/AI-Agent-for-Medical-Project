@@ -1,4 +1,4 @@
-.PHONY: install test data corpus eval-m1 eval-m2
+.PHONY: install test data corpus eval-m1 eval-m2 ui
 
 install:
 	pip install ./packages/lungnod -r services/cad-service/requirements-dev.txt
@@ -11,6 +11,7 @@ test:
 	python -m pytest -q packages/erpqms/tests
 	python -m pytest -q packages/rag/tests
 	python -m pytest -q packages/tools/tests
+	python -m pytest -q apps/assistant-ui/tests
 
 data:
 	cd packages/erpqms && python -m erpqms.generate --out ../../data/synthetic/erpqms
@@ -23,3 +24,7 @@ eval-m1: corpus
 
 eval-m2:
 	python eval/injection/run_injection.py --fail-on-created
+
+# demo UI: pip install -r apps/assistant-ui/requirements.txt first
+ui:
+	chainlit run apps/assistant-ui/app.py

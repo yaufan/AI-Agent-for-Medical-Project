@@ -60,6 +60,8 @@ jobs:
         run: python -m pytest -q packages/tools/tests
       - name: Injection suite (worst-case model; fails on any unflagged draft with the guard on)
         run: python eval/injection/run_injection.py --out /tmp/m2 --fail-on-created
+      - name: Demo UI backend (no Chainlit needed)
+        run: python -m pytest -q apps/assistant-ui/tests
 
   erpqms-postgres:
     runs-on: ubuntu-latest

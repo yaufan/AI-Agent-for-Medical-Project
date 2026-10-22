@@ -233,3 +233,7 @@ models/
 *.onnx
 *.joblib
 .DS_Store
+
+# Chainlit runtime files
+apps/assistant-ui/.files/
+apps/assistant-ui/.chainlit/translations/

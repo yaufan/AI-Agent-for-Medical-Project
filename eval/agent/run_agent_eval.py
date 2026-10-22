@@ -5,6 +5,8 @@ strings it must not contain (access control), tools it must call, or a draft it 
 Needs a real model behind an OpenAI-compatible endpoint, for example Ollama on the local machine:
 
     python eval/agent/run_agent_eval.py --model qwen3:8b --base-url http://localhost:11434/v1
+    # the fixed workflow (rules instead of a model) on the same tasks, as the baseline
+    python eval/agent/run_agent_eval.py --model workflow
     # slow or shared server
     python eval/agent/run_agent_eval.py --model M --base-url URL --timeout 1800 --retries 12 --ids A01 A02
 
@@ -30,6 +32,7 @@ from agenttools.core import Session  # noqa: E402
 from agenttools.drafts import DraftStore  # noqa: E402
 from agenttools.guard import Guard  # noqa: E402
 from agenttools.tools import Context, build_registry  # noqa: E402
+from agenttools.workflow import Workflow  # noqa: E402
 from erpqms import generate  # noqa: E402
 from rag.acl import GroupStore  # noqa: E402
 from rag.chunking import chunk_corpus  # noqa: E402
@@ -66,8 +69,8 @@ def check(task: dict, out: dict, drafts: list[dict]) -> dict:
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--model", required=True)
-    ap.add_argument("--base-url", required=True)
+    ap.add_argument("--model", required=True, help="a model served at --base-url, or 'workflow'")
+    ap.add_argument("--base-url")
     ap.add_argument("--out", type=Path, default=ROOT / "results/m2")
     ap.add_argument("--ids", nargs="+", help="only these task ids")
     ap.add_argument("--timeout", type=float, default=300.0, help="seconds per model request")
@@ -106,9 +109,12 @@ def main():
             ctx = Context(db, DraftStore(), retriever)
             reg = build_registry(ctx)
             session = Session(task["user"], store.groups(task["user"]), request=task["request"])
-            llm = agent.ChatLLM(args.base_url, args.model, timeout=args.timeout, retries=args.retries)
             try:
-                out = agent.run(llm, reg, Guard(reg), session)
+                if args.model == "workflow":
+                    out = Workflow(Guard(reg)).run(session)
+                else:
+                    llm = agent.ChatLLM(args.base_url, args.model, timeout=args.timeout, retries=args.retries)
+                    out = agent.run(llm, reg, Guard(reg), session)
                 res = check(task, out, ctx.drafts.pending())
                 row = {"id": task["id"], **res, "steps": out["steps"], "stopped": out["stopped"],
                        "seconds": out["seconds"], "usage": out["usage"], "answer": out["answer"]}

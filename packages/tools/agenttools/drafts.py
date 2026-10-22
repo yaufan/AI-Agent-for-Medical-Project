@@ -35,7 +35,8 @@ class ApprovalError(Exception):
 
 class DraftStore:
     def __init__(self, path: Path | str = ":memory:"):
-        self.con = sqlite3.connect(str(path))
+        # shared by the MCP server and the demo UI, which call it from worker threads
+        self.con = sqlite3.connect(str(path), check_same_thread=False)
         self.con.row_factory = sqlite3.Row
         self.con.executescript(SCHEMA)
 

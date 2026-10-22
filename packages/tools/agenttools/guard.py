@@ -10,9 +10,9 @@ Checks, in order:
 4. at most `max_writes_per_turn` write calls per turn.
 
 A call that passes still only creates a draft; a person approves it later (drafts.py). Before that,
-the guard compares the draft's text with the third-party text tools returned in this turn: a field
-copied from a complaint, document or API record is flagged in the draft (`_provenance`), so the
-reviewer sees that the wording did not come from the user. The guard is one layer; human approval
+the guard compares the draft's free-text fields with the third-party text tools returned in this
+turn: a field copied from a complaint, document or API record is flagged in the draft (`_provenance`),
+so the reviewer sees that the wording did not come from the user. The guard is one layer; human approval
 is the other.
 """
 from __future__ import annotations
@@ -34,15 +34,20 @@ SITE_IN_REQUEST = re.compile(r"醫院([A-L])")
 MIN_TAINT_LEN = 4
 
 
-def _strings(value, path=""):
+def _free_text(schema: dict, value, path=""):
+    """Strings in the arguments whose schema allows free text. Values constrained by a pattern or
+    enum (site ids, complaint ids, dates) are identifiers: copying them from a tool result is the
+    normal way to refer to a record, not a sign of injected wording."""
     if isinstance(value, str):
-        yield path, value
+        if "pattern" not in schema and "enum" not in schema:
+            yield path, value
     elif isinstance(value, dict):
+        props = schema.get("properties", {})
         for k, v in value.items():
-            yield from _strings(v, f"{path}.{k}" if path else k)
+            yield from _free_text(props.get(k, {}), v, f"{path}.{k}" if path else k)
     elif isinstance(value, list):
         for i, v in enumerate(value):
-            yield from _strings(v, f"{path}[{i}]")
+            yield from _free_text(schema.get("items", {}), v, f"{path}[{i}]")
 
 
 class Guard:
@@ -71,7 +76,7 @@ class Guard:
                 writes = sum(1 for e in session.trace if e.get("kind") == "write" and e.get("ok"))
                 if writes >= self.max_writes:
                     raise ToolError("rate_limited", "only one write draft per turn")
-                tainted = sorted({path for path, s in _strings(args) if len(s.strip()) >= MIN_TAINT_LEN
+                tainted = sorted({path for path, s in _free_text(tool.schema, args) if len(s.strip()) >= MIN_TAINT_LEN
                                   and any(s.strip() in seen for seen in session.untrusted_seen)})
                 if tainted:
                     entry["tainted_fields"] = tainted

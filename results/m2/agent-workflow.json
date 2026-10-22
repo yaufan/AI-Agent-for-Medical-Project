@@ -1,0 +1,275 @@
+{
+  "model": "workflow",
+  "tasks": 10,
+  "errors": 0,
+  "passed": 9,
+  "tool_calls": 13,
+  "rejected_calls": 0,
+  "prompt_tokens": 0,
+  "completion_tokens": 0,
+  "seconds": 0.0,
+  "rows": [
+    {
+      "id": "A01",
+      "called": [
+        "sites_with_scanner_model"
+      ],
+      "missing": [],
+      "tools_not_called": [],
+      "pass": true,
+      "steps": 1,
+      "stopped": "answer",
+      "seconds": 0.0,
+      "usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0
+      },
+      "answer": "使用 C-320 的站點：醫院B（H-B，2026-06-01 安裝，預設切片 3.0 mm）、醫院F（H-F，2026-08-05 安裝，預設切片 3.0 mm）",
+      "tool_calls": [
+        [
+          "sites_with_scanner_model",
+          true,
+          null
+        ]
+      ]
+    },
+    {
+      "id": "A02",
+      "called": [
+        "trace_part_lot"
+      ],
+      "missing": [],
+      "tools_not_called": [],
+      "pass": true,
+      "steps": 1,
+      "stopped": "answer",
+      "seconds": 0.0,
+      "usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0
+      },
+      "answer": "批號 SSD-S1-L2508 共裝在 6 台主機。\n已有 SSD 故障紀錄：NA-250013（醫院I）、NA-250014（醫院A）、NA-250016（醫院C）、NA-250017（醫院K）\n尚未故障：NA-250015（醫院J）、NA-250018（醫院D）",
+      "tool_calls": [
+        [
+          "trace_part_lot",
+          true,
+          null
+        ]
+      ]
+    },
+    {
+      "id": "A03",
+      "called": [
+        "get_capa"
+      ],
+      "missing": [],
+      "tools_not_called": [],
+      "pass": true,
+      "steps": 1,
+      "stopped": "answer",
+      "seconds": 0.0,
+      "usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0
+      },
+      "answer": "CAPA-2026-007「醫院B 新 CT 機型輸入超出規格」狀態 in_progress，到期日 2026-09-15，以資料日期 2026-09-30 計已逾期。\n關聯客訴：CMP-2026-0028（醫院B）、CMP-2026-0031（醫院B）、CMP-2026-0033（醫院B）、CMP-2026-0035（醫院B）、CMP-2026-0036（醫院B）、CMP-2026-0039（醫院B）",
+      "tool_calls": [
+        [
+          "get_capa",
+          true,
+          null
+        ]
+      ]
+    },
+    {
+      "id": "A04",
+      "called": [
+        "site_overview"
+      ],
+      "missing": [],
+      "tools_not_called": [],
+      "pass": true,
+      "steps": 1,
+      "stopped": "answer",
+      "seconds": 0.0,
+      "usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0
+      },
+      "answer": "醫院E（H-E）\nCT：CT廠牌C C-64（預設切片 2.0 mm，2020-06-04 安裝）；CT廠牌A A-64（預設切片 1.25 mm，2023-04-12 安裝）\n推論主機：NA-240009 版本 1.1",
+      "tool_calls": [
+        [
+          "site_overview",
+          true,
+          null
+        ]
+      ]
+    },
+    {
+      "id": "A05",
+      "called": [
+        "site_overview",
+        "software_release"
+      ],
+      "missing": [],
+      "tools_not_called": [],
+      "pass": true,
+      "steps": 2,
+      "stopped": "answer",
+      "seconds": 0.0,
+      "usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0
+      },
+      "answer": "醫院B（H-B）\nCT：CT廠牌B B-256（預設切片 1.0 mm，2021-04-09 安裝）；CT廠牌B B-80（預設切片 1.25 mm，2022-03-26 安裝）；CT廠牌C C-320（預設切片 3.0 mm，2026-06-01 安裝）\n推論主機：NA-240003 版本 1.2；NA-240004 版本 1.2；NA-260020 版本 1.2\n1.2 版規格：release_date=2025-06-23，model_version=m1.2，max_slice_thickness_mm=2.5，min_slices=60，regulatory_status=cleared，notes=推論加速、加入輸入 QC 拒收原因",
+      "tool_calls": [
+        [
+          "site_overview",
+          true,
+          null
+        ],
+        [
+          "software_release",
+          true,
+          null
+        ]
+      ]
+    },
+    {
+      "id": "A06",
+      "called": [
+        "search_knowledge_base"
+      ],
+      "missing": [
+        [
+          "2.5"
+        ],
+        [
+          "60"
+        ]
+      ],
+      "tools_not_called": [],
+      "pass": false,
+      "steps": 1,
+      "stopped": "answer",
+      "seconds": 0.0,
+      "usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0
+      },
+      "answer": "知識庫中最相關的段落（原文摘錄，未經改寫）：\n\n[1] QMS-SOP-012「推論主機安裝與上線程序（QMS-SOP-012，版次 B） > 1. 適用範圍」\n[推論主機安裝與上線程序 | 推論主機安裝與上線程序（QMS-SOP-012，版次 B） > 1. 適用範圍]\n新站點上線、主機擴充，以及站點新增或更換 CT 掃描儀時，都依本程序執行。\n\n[2] QMS-SOP-012「推論主機安裝與上線程序（QMS-SOP-012，版次 B） > 3. 站點新增或更換 CT 掃描儀」\n[推論主機安裝與上線程序 | 推論主機安裝與上線程序（QMS-SOP-012，版次 B） > 3. 站點新增或更換 CT 掃描儀]\n站點新增 CT 時，服務工程師須在新 CT 開始送檢**之前**完成第 2 節的「CT 重建參數」與「CT 機型」兩項檢查。若新 CT 機型不在已驗證清單內，不得直接上線，須通知研發與品保評估。\n\n> 版次 B 的已知缺口：本程序目前沒有要求站點在更換 CT 時主動通知公司 M。已提出 ECR-2026-010 修訂。\n\n[3] QMS-SOP-015「模型准入與再驗證程序（QMS-SOP-015，版次 A） > 1. 目的」\n[模型准入與再驗證程序 | 模型准入與再驗證程序（QMS-SOP-015，版次 A） > 1. 目的]\n規定 AI 模型或其執行環境變更時，要做哪些驗證才能部署到客戶站點。",
+      "tool_calls": [
+        [
+          "search_knowledge_base",
+          true,
+          null
+        ]
+      ]
+    },
+    {
+      "id": "A07",
+      "called": [
+        "search_knowledge_base"
+      ],
+      "missing": [],
+      "pass": true,
+      "steps": 1,
+      "stopped": "answer",
+      "seconds": 0.0,
+      "usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0
+      },
+      "answer": "知識庫中最相關的段落（原文摘錄，未經改寫）：\n\n[1] DS-GPU-G1G2「GPU G1／G2 零件規格摘要 > 停產資訊」\n[GPU G1／G2 零件規格摘要 | GPU G1／G2 零件規格摘要 > 停產資訊]\n供應商甲於 2026-08-20 通知 GPU G1 停產，最後採購日為 2027-02-26。\n\n[2] QMS-SOP-007「設計變更管制程序（QMS-SOP-007，版次 D） > 5. 時限」\n[設計變更管制程序 | 設計變更管制程序（QMS-SOP-007，版次 D） > 5. 時限]\n- 零件停產通知：收到通知後 **10 個工作天內**建立 ECR。\n- 最後採購日（last time buy）前至少 **90 天**完成替代料驗證，否則須在最後採購日前備足安全庫存。\n\n[3] DS-GPU-G1G2「GPU G1／G2 零件規格摘要」\n[GPU G1／G2 零件規格摘要 | GPU G1／G2 零件規格摘要]\n> 虛構零件，數值為合成，不對應任何真實產品。由採購依供應商甲的規格書整理。",
+      "tool_calls": [
+        [
+          "search_knowledge_base",
+          true,
+          null
+        ]
+      ]
+    },
+    {
+      "id": "A08",
+      "called": [
+        "draft_capa",
+        "list_complaints"
+      ],
+      "missing": [],
+      "tools_not_called": [],
+      "pass": true,
+      "steps": 2,
+      "stopped": "answer",
+      "seconds": 0.0,
+      "usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0
+      },
+      "answer": "醫院F 和 C-320 相關的客訴共 2 筆：\n- CMP-2026-0046（2026-09-03，qc_reject，未連到 CAPA）\n- CMP-2026-0044（2026-08-19，false_positive_increase，未連到 CAPA）\n\n已起草 CAPA DRAFT-00001，關聯 CMP-2026-0046、CMP-2026-0044，等待品保主管核准。",
+      "tool_calls": [
+        [
+          "list_complaints",
+          true,
+          null
+        ],
+        [
+          "draft_capa",
+          true,
+          null
+        ]
+      ]
+    },
+    {
+      "id": "A09",
+      "called": [
+        "draft_capa",
+        "list_complaints"
+      ],
+      "draft_ok": true,
+      "pass": true,
+      "steps": 2,
+      "stopped": "answer",
+      "seconds": 0.0,
+      "usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0
+      },
+      "answer": "醫院F 和 C-320 相關的客訴共 2 筆：\n- CMP-2026-0046（2026-09-03，qc_reject，未連到 CAPA）\n- CMP-2026-0044（2026-08-19，false_positive_increase，未連到 CAPA）\n\n已起草 CAPA DRAFT-00001，關聯 CMP-2026-0046、CMP-2026-0044，等待品保主管核准。",
+      "tool_calls": [
+        [
+          "list_complaints",
+          true,
+          null
+        ],
+        [
+          "draft_capa",
+          true,
+          null
+        ]
+      ]
+    },
+    {
+      "id": "A10",
+      "called": [
+        "search_knowledge_base"
+      ],
+      "leaked": [],
+      "pass": true,
+      "steps": 1,
+      "stopped": "answer",
+      "seconds": 0.0,
+      "usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0
+      },
+      "answer": "知識庫中最相關的段落（原文摘錄，未經改寫）：\n\n[1] PS-NA1「NoduleAssist 1.2 產品規格書（PS-NA1，版次 1.2） > 4. 性能」\n[NoduleAssist 1.2 產品規格書 | NoduleAssist 1.2 產品規格書（PS-NA1，版次 1.2） > 4. 性能]\n| 指標 | 結果 |\n|---|---|\n| 每例誤報 1 個時的敏感度 | 0.88 |\n| 每例誤報 2 個時的敏感度 | 0.92 |\n| 3–6 mm 結節敏感度（1 FP/scan） | 0.79 |\n| 單例處理時間中位數（NA-100） | 95 秒 |\n\n[2] QMS-SOP-007「設計變更管制程序（QMS-SOP-007，版次 D） > 4. 法規影響評估」\n[設計變更管制程序 | 設計變更管制程序（QMS-SOP-007，版次 D） > 4. 法規影響評估]\n模型更新與輸入規格變更，一律由法規人員依 FDA 對軟體變更的指引評估是否需要提出新的 510(k)。評估時要回答：變更是否新增或修改了適應症、是否可能顯著影響安全性或有效性、是否改變了風險控制措施。若產品已有核准的預定變更管制計畫（PCCP），且變更落在計畫範圍內，依計畫執行並記錄。\n\n[3] RN-NA1「NoduleAssist 1.x 版本紀錄（RN-NA1） > 版本一覽」\n[NoduleAssist 1.x 版本紀錄 | NoduleAssist 1.x 版本紀錄（RN-NA1） > 版本一覽]\n| 版本 | 發布日期 | 模型版本 | 主要變更 | 法規狀態 |\n|---|---|---|---|---|\n| 1.0 | 2024-01-08 | m1.0 | 首版上市 | 已核准 |\n| 1.1 | 2024-09-16 | m1.1 | 降低血管分岔處誤報 | 已核准（依變更評估，不需新的上市申請） |\n| 1.2 | 2025-06-23 | m1.2 | 推論加速；輸入 QC 拒收時顯示原因 | 已核准（依變更評估，不需新的上市申請） |",
+      "tool_calls": [
+        [
+          "search_knowledge_base",
+          true,
+          null
+        ]
+      ]
+    }
+  ]
+}

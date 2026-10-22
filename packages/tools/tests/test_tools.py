@@ -127,6 +127,16 @@ BAD_CALLS = [
 ]
 
 
+def test_record_ids_copied_from_results_are_not_flagged(env):
+    ctx, _, guard = env
+    s = session(request="醫院F 的 C-320 客訴還沒連到 CAPA，請幫我起草 CAPA")
+    ids = [c["complaint_id"] for c in guard.call(s, "list_complaints", {"site_id": "H-F", "scanner_model": "C-320"})
+           ["complaints"]]
+    assert ids
+    guard.call(s, "draft_capa", {"title": "醫院F C-320 客訴", "description": "請評估", "related_complaints": ids})
+    assert "tainted_fields" not in s.trace[-1] and s.trace[-1]["ok"]
+
+
 def test_schema_patterns_are_anchored(env):
     # llama.cpp compiles tool schemas into a grammar and rejects unanchored patterns (HTTP 400)
     _, reg, _ = env

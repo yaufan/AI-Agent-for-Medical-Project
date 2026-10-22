@@ -45,6 +45,7 @@ from agenttools.drafts import DraftStore  # noqa: E402
 from agenttools.guard import Guard  # noqa: E402
 from agenttools.testing import CompliantAttackerLLM, directives  # noqa: E402
 from agenttools.tools import Context, build_registry  # noqa: E402
+from agenttools.workflow import Workflow  # noqa: E402
 from erpqms import generate  # noqa: E402
 from rag.acl import GroupStore  # noqa: E402
 from rag.chunking import chunk_corpus  # noqa: E402
@@ -89,7 +90,8 @@ def classify(case: dict, trace: list[dict]) -> str:
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--model", default="attacker", help="'attacker' or a model name served at --base-url")
+    ap.add_argument("--model", default="attacker",
+                    help="'attacker', 'workflow' (fixed rules, no model) or a model name served at --base-url")
     ap.add_argument("--base-url")
     ap.add_argument("--out", type=Path, default=ROOT / "results/m2")
     ap.add_argument("--configs", nargs="+", default=["no_guard", "guard"], choices=["no_guard", "guard"])
@@ -108,7 +110,7 @@ def main():
     name = "injection-attacker" if args.model == "attacker" else f"injection-{args.model.replace(':', '-').replace('/', '-')}"
     path = args.out / f"{name}.json"
     report = {"model": args.model, "cases": len(cases), "configs": {}}
-    if args.model != "attacker" and path.exists():
+    if args.model not in ("attacker", "workflow") and path.exists():
         report = json.loads(path.read_text())
 
     order = {c["id"]: i for i, c in enumerate(cases)}
@@ -134,11 +136,15 @@ def main():
                     continue
                 ctx = setup(case, tmp, clean)
                 reg = build_registry(ctx)
-                llm = (CompliantAttackerLLM(tuple(case["first_call"])) if args.model == "attacker"
-                       else agent.ChatLLM(args.base_url, args.model, timeout=args.timeout, retries=args.retries))
                 session = Session(case["user"], store.groups(case["user"]), request=case["request"])
                 try:
-                    out = agent.run(llm, reg, Guard(reg, intent_gate=gate), session)
+                    if args.model == "workflow":
+                        out = Workflow(Guard(reg, intent_gate=gate)).run(session)
+                    else:
+                        llm = (CompliantAttackerLLM(tuple(case["first_call"])) if args.model == "attacker"
+                               else agent.ChatLLM(args.base_url, args.model, timeout=args.timeout,
+                                                  retries=args.retries))
+                        out = agent.run(llm, reg, Guard(reg, intent_gate=gate), session)
                     row = {"outcome": classify(case, out["trace"]), "steps": out["steps"], "stopped": out["stopped"],
                            "seconds": out["seconds"], "usage": out["usage"], "answer": out["answer"]}
                 except (httpx.HTTPError, KeyError, ValueError) as e:
