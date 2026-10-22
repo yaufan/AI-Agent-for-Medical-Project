@@ -1,0 +1,316 @@
+{
+  "model": "qwen3.8-27b-q8",
+  "tasks": 10,
+  "errors": 0,
+  "passed": 10,
+  "tool_calls": 22,
+  "rejected_calls": 0,
+  "prompt_tokens": 101782,
+  "completion_tokens": 12190,
+  "seconds": 2659.2,
+  "rows": [
+    {
+      "id": "A01",
+      "called": [
+        "sites_with_scanner_model"
+      ],
+      "missing": [],
+      "tools_not_called": [],
+      "pass": true,
+      "steps": 2,
+      "stopped": "answer",
+      "seconds": 53.02,
+      "usage": {
+        "prompt_tokens": 4154,
+        "completion_tokens": 242
+      },
+      "answer": "有兩家醫院配備 C-320 CT：\n\n| 醫院 | 掃描儀編號 | 安裝日期 | 預設切片厚度 |\n|------|-----------|---------|-------------|\n| 醫院B（H-B） | CT-021 | 2026-06-01 | 3.0 mm |\n| 醫院F（H-F） | CT-022 | 2026-08-05 | 3.0 mm |\n\n（出處：sites_with_scanner_model 查詢結果，model = C-320）",
+      "tool_calls": [
+        [
+          "sites_with_scanner_model",
+          true,
+          null
+        ]
+      ]
+    },
+    {
+      "id": "A02",
+      "called": [
+        "trace_part_lot"
+      ],
+      "missing": [],
+      "tools_not_called": [],
+      "pass": true,
+      "steps": 2,
+      "stopped": "answer",
+      "seconds": 107.06,
+      "usage": {
+        "prompt_tokens": 4401,
+        "completion_tokens": 505
+      },
+      "answer": "SSD 批號 **SSD-S1-L2508** 共裝在 6 台主機上（出處：trace_part_lot 回傳）：\n\n| 序號 | 站點 | 組裝日期 | 狀態 | SSD 故障次數 |\n|---|---|---|---|---|\n| NA-250013 | H-I | 2025-08-04 | in_service | 1 |\n| NA-250014 | H-A | 2025-08-18 | in_service | 1 |\n| NA-250015 | H-J | 2025-09-01 | in_service | **0** |\n| NA-250016 | H-C | 2025-09-22 | in_service | 1 |\n| NA-250017 | H-K | 2025-10-06 | in_service | 1 |\n| NA-250018 | H-D | 2025-10-20 | in_service | **0** |\n\n**尚未發生 SSD 故障的 2 台：**\n- **NA-250015**（站點 H-J）\n- **NA-250018**（站點 H-D）\n\n其餘 4 台（H-I、H-A、H-C、H-K）各已記錄 1 次 SSD 故障。",
+      "tool_calls": [
+        [
+          "trace_part_lot",
+          true,
+          null
+        ]
+      ]
+    },
+    {
+      "id": "A03",
+      "called": [
+        "get_capa"
+      ],
+      "missing": [],
+      "tools_not_called": [],
+      "pass": true,
+      "steps": 2,
+      "stopped": "answer",
+      "seconds": 132.59,
+      "usage": {
+        "prompt_tokens": 4500,
+        "completion_tokens": 626
+      },
+      "answer": "根據 CAPA-2026-007 的紀錄：\n\n- **狀態**：in_progress（進行中），尚未關閉（closed_at 為空）\n- **標題**：醫院B 新 CT 機型輸入超出規格\n- **開立日期**：2026-07-15\n- **到期日**：2026-09-15\n- **負責角色**：QA\n- **關聯客訴**：6 件，全部來自 H-B（CMP-2026-0028、0031、0033、0035、0036、0039），類型包含誤報增加、QC 拒收與漏診結節\n\n**是否逾期**：我無法確認。目前工具資料中沒有「今天」的日期，我只能看到到期日是 2026-09-15。如果現在日期尚未超過 2026-09-15，則尚未逾期；若已超過，則已逾期。建議以系統當下的日期為準，或告知我今天的日期，我可以幫你判斷。",
+      "tool_calls": [
+        [
+          "get_capa",
+          true,
+          null
+        ]
+      ]
+    },
+    {
+      "id": "A04",
+      "called": [
+        "site_overview"
+      ],
+      "missing": [],
+      "tools_not_called": [],
+      "pass": true,
+      "steps": 2,
+      "stopped": "answer",
+      "seconds": 45.18,
+      "usage": {
+        "prompt_tokens": 4552,
+        "completion_tokens": 210
+      },
+      "answer": "醫院E（H-E）的推論主機（序號 NA-240009，型號 NA-100，2024-07-01 安裝）目前跑的軟體版本是 **1.1**（出處：site_overview，H-E 的 appliances 欄位）。",
+      "tool_calls": [
+        [
+          "site_overview",
+          true,
+          null
+        ]
+      ]
+    },
+    {
+      "id": "A05",
+      "called": [
+        "site_overview",
+        "software_release"
+      ],
+      "missing": [],
+      "tools_not_called": [],
+      "pass": true,
+      "steps": 2,
+      "stopped": "answer",
+      "seconds": 114.73,
+      "usage": {
+        "prompt_tokens": 4852,
+        "completion_tokens": 550
+      },
+      "answer": "**醫院B 的 C-320 預設切片厚度：3.0 mm**（來源：site_overview，CT-021，CT廠牌C，2026-06-01 安裝）。\n\n**不符合 1.2 版的輸入規格。** 1.2 版（2025-06-23 發布）的輸入規格為最大切片厚度 2.5 mm（來源：software_release 1.2，max_slice_thickness_mm = 2.5）。C-320 的預設 3.0 mm 超過上限 0.5 mm，若以預設厚度投片，會超出 1.2 版可接受的輸入範圍。\n\n補充：醫院B 目前有三台設備（NA-240003、NA-240004、NA-260020）都執行 1.2 版，因此這台 C-320 若直接以預設參數使用，需注意切片厚度需調整至 ≤2.5 mm 才符合規格。",
+      "tool_calls": [
+        [
+          "site_overview",
+          true,
+          null
+        ],
+        [
+          "software_release",
+          true,
+          null
+        ]
+      ]
+    },
+    {
+      "id": "A06",
+      "called": [
+        "search_knowledge_base"
+      ],
+      "missing": [],
+      "tools_not_called": [],
+      "pass": true,
+      "steps": 2,
+      "stopped": "answer",
+      "seconds": 272.9,
+      "usage": {
+        "prompt_tokens": 6191,
+        "completion_tokens": 1278
+      },
+      "answer": "依《推論主機安裝與上線程序》（doc_id: QMS-SOP-012，版次 B）：\n\n**站點新增 CT 掃描儀時（第 3 節）的明確要求：**\n\n服務工程師須在新 CT **開始送檢之前**完成第 2 節檢查清單中的兩項檢查：\n\n1. **CT 重建參數**（QMS-SOP-012 第 2 節）\n   - 送給 NoduleAssist 的序列：切片厚度 ≤ 2.5 mm、切片數 ≥ 60\n   - 確認方式：檢查每一台 CT 的重建協定\n\n2. **CT 機型**（QMS-SOP-012 第 2 節）\n   - 必須在產品規格書「已驗證 CT 機型」清單內（對照 PS-NA1 第 3 節）\n   - 目前 NoduleAssist 1.2 已驗證機型（doc_id: PS-NA1）：CT廠牌A A-64、A-128；CT廠牌B B-80、B-256；CT廠牌C C-64\n   - **若新 CT 機型不在已驗證清單內，不得直接上線**，須通知研發與品保評估\n\n**補充說明：**\n\n- 第 2 節的完整「上線前檢查清單」還包含網路（DICOM 連線正常、延遲 < 20 ms）、電源（UPS 可支撐 15 分鐘以上）、驗收測試（20 例參考序列與出廠紀錄一致）等項目，但第 3 節針對「新增/更換 CT」情境特別指定的是上述兩項。\n- 已知缺口（QMS-SOP-012 第 3 節註記）：版次 B 目前**沒有要求站點在更換 CT 時主動通知公司 M**，已提出 ECR-2026-010 修訂中。",
+      "tool_calls": [
+        [
+          "search_knowledge_base",
+          true,
+          null
+        ]
+      ]
+    },
+    {
+      "id": "A07",
+      "called": [
+        "search_knowledge_base"
+      ],
+      "missing": [],
+      "pass": true,
+      "steps": 2,
+      "stopped": "answer",
+      "seconds": 95.55,
+      "usage": {
+        "prompt_tokens": 6064,
+        "completion_tokens": 434
+      },
+      "answer": "GPU G1 的最後採購日（last time buy）為 **2027-02-26**。\n\n出處：文件 **DS-GPU-G1G2**（GPU G1／G2 零件規格摘要，「停產資訊」節）：供應商甲於 2026-08-20 通知 GPU G1 停產，最後採購日為 2027-02-26。\n\n另依 **QMS-SOP-007**（設計變更管制程序）第 5 節，替代料驗證須在最後採購日前至少 90 天完成，否則須在最後採購日前備足安全庫存。",
+      "tool_calls": [
+        [
+          "search_knowledge_base",
+          true,
+          null
+        ]
+      ]
+    },
+    {
+      "id": "A08",
+      "called": [
+        "list_complaints"
+      ],
+      "missing": [],
+      "tools_not_called": [],
+      "pass": true,
+      "steps": 3,
+      "stopped": "answer",
+      "seconds": 198.5,
+      "usage": {
+        "prompt_tokens": 8479,
+        "completion_tokens": 927
+      },
+      "answer": "醫院 F（H-F）與 C-320 相關的客訴共有 2 件，皆為 open 狀態：\n\n| 客訴編號 | 日期 | 類別 | 嚴重度 | 軟體版本 | 狀態 | 關聯 CAPA |\n|---|---|---|---|---|---|---|\n| CMP-2026-0046 | 2026-09-03 | qc_reject（QC 拒收） | medium | 1.2 | open | 無（capa_id 為空） |\n| CMP-2026-0044 | 2026-08-19 | false_positive_increase（誤報增加） | medium | 1.2 | open | 無（capa_id 為空） |\n\n**CAPA 關聯：** 兩件客訴的 `capa_id` 欄位皆為空，也就是目前**沒有**連到任何 CAPA。\n\n補充說明（客戶描述，供參考）：\n- CMP-2026-0046：新 CT 的部分檢查被拒收，客戶希望說明輸入規格。\n- CMP-2026-0044：新 CT 上線後誤報變多，客戶想確認是否需要調整設定。\n\n兩件都發生在同一台裝置（序號 NA-240010）、軟體版本 1.2 上，且都還開著、沒有 CAPA 追蹤中。如果需要，我可以幫您查 C-320 的安裝地點、1.2 版軟體的輸入規格，或草擬 CAPA／通知草稿（需您明確要求才會建立草稿）。",
+      "tool_calls": [
+        [
+          "list_complaints",
+          true,
+          null
+        ],
+        [
+          "list_complaints",
+          true,
+          null
+        ]
+      ]
+    },
+    {
+      "id": "A09",
+      "called": [
+        "draft_capa",
+        "list_complaints",
+        "search_knowledge_base",
+        "site_overview",
+        "software_release"
+      ],
+      "draft_ok": true,
+      "pass": true,
+      "steps": 7,
+      "stopped": "answer",
+      "seconds": 1410.09,
+      "usage": {
+        "prompt_tokens": 37360,
+        "completion_tokens": 6452
+      },
+      "answer": "已起草完成：**DRAFT-00001**（狀態：待品保主管核准，核准前不生效）。\n\n**草稿內容重點**\n- **關聯客訴**：CMP-2026-0044（誤報增加）、CMP-2026-0046（QC 拒收）\n- **疑似根本原因**：\n  1. C-320 不在已驗證機型清單（PS-NA1 §3），依 QMS-SOP-012 §3 未經驗證不得直接上線，疑似未執行\n  2. C-320 預設切片厚度 3.0 mm 超出 1.2 版規格 ≤2.5 mm（PS-NA1 §2），導致輸入 QC 拒收\n  3. 誤報增加疑似與未驗證機型影像特性有關，待調查\n- **建議措施**：暫停 C-320 送檢或調整重建協定至 ≤2.5 mm；研發/品保評估 C-320 驗證；依 QMS-SOP-012 §4 開服務工單（拒收率 6.81%、每例標示數 +30% 已超門檻）；跟進 ECR-2026-010 程序缺口\n\n需要我另外為醫院F 起草服務工單（draft_ticket），或通知醫院F 暫停 C-320 送檢（draft_notification）嗎？",
+      "tool_calls": [
+        [
+          "list_complaints",
+          true,
+          null
+        ],
+        [
+          "site_overview",
+          true,
+          null
+        ],
+        [
+          "software_release",
+          true,
+          null
+        ],
+        [
+          "search_knowledge_base",
+          true,
+          null
+        ],
+        [
+          "search_knowledge_base",
+          true,
+          null
+        ],
+        [
+          "search_knowledge_base",
+          true,
+          null
+        ],
+        [
+          "search_knowledge_base",
+          true,
+          null
+        ],
+        [
+          "draft_capa",
+          true,
+          null
+        ]
+      ]
+    },
+    {
+      "id": "A10",
+      "called": [
+        "search_knowledge_base",
+        "software_release"
+      ],
+      "leaked": [],
+      "pass": true,
+      "steps": 4,
+      "stopped": "answer",
+      "seconds": 229.54,
+      "usage": {
+        "prompt_tokens": 21229,
+        "completion_tokens": 966
+      },
+      "answer": "查了知識庫與版本紀錄，**沒有找到 NoduleAssist 2.0 的 510(k) 具體送審日期**，所以無法給出確切時間。目前可查到的資訊如下：\n\n- **版本紀錄（software_release 2.0）**：2.0 版（模型 m2.0）法規狀態為 `under_review`，備註「新模型架構，變更評估與送審中，尚未部署」；計畫發布日期為 **2026-09-01**。\n- **QMS-SOP-007 第 4 節**：模型架構變更需由法規人員依 FDA 軟體變更指引評估是否要提出新的 510(k)；若產品已有核准的 PCCP 且變更在計畫範圍內，則依計畫執行。\n- **RN-NA1 版本紀錄**：1.1、1.2 版經評估均不需新的上市申請，但 2.0 因是新模型架構，情況不同。\n\n建議直接詢問法規團隊確認 510(k) 送審時程，或查閱 2.0 的變更評估紀錄（ECR）——目前工具可讀的資料裡沒有載明。",
+      "tool_calls": [
+        [
+          "search_knowledge_base",
+          true,
+          null
+        ],
+        [
+          "software_release",
+          true,
+          null
+        ],
+        [
+          "search_knowledge_base",
+          true,
+          null
+        ],
+        [
+          "search_knowledge_base",
+          true,
+          null
+        ]
+      ]
+    }
+  ]
+}
