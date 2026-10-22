@@ -5,6 +5,11 @@ strings it must not contain (access control), tools it must call, or a draft it 
 Needs a real model behind an OpenAI-compatible endpoint, for example Ollama on the local machine:
 
     python eval/agent/run_agent_eval.py --model qwen3:8b --base-url http://localhost:11434/v1
+    # slow or shared server
+    python eval/agent/run_agent_eval.py --model M --base-url URL --timeout 1800 --retries 12 --ids A01 A02
+
+Saves after every task and skips tasks already in the output file; failed model calls are recorded
+as errors and retried on the next run.
 """
 from __future__ import annotations
 
@@ -13,6 +18,8 @@ import json
 import sys
 import tempfile
 from pathlib import Path
+
+import httpx
 
 ROOT = Path(__file__).resolve().parents[2]
 for p in ("packages/tools", "packages/rag", "packages/erpqms"):
@@ -62,35 +69,59 @@ def main():
     ap.add_argument("--model", required=True)
     ap.add_argument("--base-url", required=True)
     ap.add_argument("--out", type=Path, default=ROOT / "results/m2")
+    ap.add_argument("--ids", nargs="+", help="only these task ids")
+    ap.add_argument("--timeout", type=float, default=300.0, help="seconds per model request")
+    ap.add_argument("--retries", type=int, default=0, help="retries when the model server is down (5 min apart)")
     args = ap.parse_args()
     tasks = [json.loads(line) for line in open(ROOT / "eval/agent/tasks.jsonl", encoding="utf-8")]
+    if args.ids:
+        tasks = [t for t in tasks if t["id"] in args.ids]
+    order = {t["id"]: i for i, t in enumerate(tasks)}
     store = GroupStore.from_json(ROOT / "eval/users.json")
     retriever = Retriever(chunk_corpus([load_markdown(p) for p in sorted((ROOT / "data/corpus").glob("*/*.md"))]))
-    rows = []
+    args.out.mkdir(parents=True, exist_ok=True)
+    path = args.out / f"agent-{args.model.replace(':', '-').replace('/', '-')}.json"
+    rows = json.loads(path.read_text())["rows"] if path.exists() else []
+
+    def save():
+        rows.sort(key=lambda r: order.get(r["id"], 999))
+        ok = [r for r in rows if "error" not in r]
+        summary = {"model": args.model, "tasks": len(rows), "errors": len(rows) - len(ok),
+                   "passed": sum(r["pass"] for r in ok),
+                   "tool_calls": sum(len(r["tool_calls"]) for r in ok),
+                   "rejected_calls": sum(1 for r in ok for c in r["tool_calls"] if not c[1]),
+                   "prompt_tokens": sum(r["usage"].get("prompt_tokens", 0) for r in ok),
+                   "completion_tokens": sum(r["usage"].get("completion_tokens", 0) for r in ok),
+                   "seconds": round(sum(r["seconds"] for r in ok), 1), "rows": rows}
+        path.write_text(json.dumps(summary, ensure_ascii=False, indent=2))
+        return summary
+
+    done = {r["id"] for r in rows if "error" not in r}
     with tempfile.TemporaryDirectory() as tmp:
         db = Path(tmp) / "erpqms.sqlite"
         generate.write_sqlite(generate.build(), db)
         for task in tasks:
+            if task["id"] in done:
+                continue
             ctx = Context(db, DraftStore(), retriever)
             reg = build_registry(ctx)
             session = Session(task["user"], store.groups(task["user"]), request=task["request"])
-            out = agent.run(agent.ChatLLM(args.base_url, args.model), reg, Guard(reg), session)
-            res = check(task, out, ctx.drafts.pending())
-            rows.append({"id": task["id"], **res, "steps": out["steps"], "stopped": out["stopped"],
-                         "seconds": out["seconds"], "usage": out["usage"], "answer": out["answer"],
-                         "tool_calls": [(e["tool"], e.get("ok"), e.get("error")) for e in out["trace"]]})
-            print(f"{task['id']} {'PASS' if res['pass'] else 'FAIL'} {out['seconds']}s calls={len(out['trace'])}")
-    summary = {"model": args.model, "tasks": len(rows), "passed": sum(r["pass"] for r in rows),
-               "tool_calls": sum(len(r["tool_calls"]) for r in rows),
-               "rejected_calls": sum(1 for r in rows for c in r["tool_calls"] if not c[1]),
-               "prompt_tokens": sum(r["usage"].get("prompt_tokens", 0) for r in rows),
-               "completion_tokens": sum(r["usage"].get("completion_tokens", 0) for r in rows),
-               "seconds": round(sum(r["seconds"] for r in rows), 1), "rows": rows}
-    args.out.mkdir(parents=True, exist_ok=True)
-    (args.out / f"agent-{args.model.replace(':', '-').replace('/', '-')}.json").write_text(
-        json.dumps(summary, ensure_ascii=False, indent=2))
-    print(f"passed {summary['passed']}/{summary['tasks']}")
-
+            llm = agent.ChatLLM(args.base_url, args.model, timeout=args.timeout, retries=args.retries)
+            try:
+                out = agent.run(llm, reg, Guard(reg), session)
+                res = check(task, out, ctx.drafts.pending())
+                row = {"id": task["id"], **res, "steps": out["steps"], "stopped": out["stopped"],
+                       "seconds": out["seconds"], "usage": out["usage"], "answer": out["answer"]}
+                status = "PASS" if res["pass"] else "FAIL"
+            except (httpx.HTTPError, KeyError, ValueError) as e:
+                row = {"id": task["id"], "error": f"{type(e).__name__}: {e}"[:500]}
+                status = "ERROR"
+            row["tool_calls"] = [(e["tool"], e.get("ok"), e.get("error")) for e in session.trace]
+            rows[:] = [r for r in rows if r["id"] != task["id"]] + [row]
+            save()
+            print(f"{task['id']} {status} {row.get('seconds', '-')}s calls={len(row['tool_calls'])}", flush=True)
+    summary = save()
+    print(f"passed {summary['passed']}/{summary['tasks']} (errors {summary['errors']})")
 
 if __name__ == "__main__":
     main()

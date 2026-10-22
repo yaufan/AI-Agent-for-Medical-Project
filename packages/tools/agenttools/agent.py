@@ -31,15 +31,26 @@ class LLMReply:
 
 class ChatLLM:
     def __init__(self, base_url: str, model: str, api_key: str = "none", temperature: float = 0.0,
-                 timeout: float = 300.0, transport=None):
+                 timeout: float = 300.0, transport=None, retries: int = 0, retry_wait: float = 300.0):
         self.model, self.temperature = model, temperature
+        # a shared local server may be stopped for a while by other jobs: wait and retry instead of failing
+        self.retries, self.retry_wait = retries, retry_wait
         self.http = httpx.Client(base_url=base_url.rstrip("/"), timeout=timeout, transport=transport,
                                  headers={"Authorization": f"Bearer {api_key}"})
 
     def chat(self, messages: list[dict], tools: list[dict]) -> LLMReply:
-        t0 = time.time()
-        r = self.http.post("/chat/completions", json={"model": self.model, "messages": messages, "tools": tools,
-                                                      "temperature": self.temperature})
+        for attempt in range(self.retries + 1):
+            t0 = time.time()
+            try:
+                r = self.http.post("/chat/completions", json={"model": self.model, "messages": messages,
+                                                              "tools": tools, "temperature": self.temperature})
+                if r.status_code < 500:
+                    break
+            except httpx.TransportError:
+                if attempt == self.retries:
+                    raise
+            if attempt < self.retries:
+                time.sleep(self.retry_wait)
         r.raise_for_status()
         data = r.json()
         msg = data["choices"][0]["message"]

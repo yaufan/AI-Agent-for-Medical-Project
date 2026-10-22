@@ -17,6 +17,11 @@ Nothing is ever executed without approval: write tools only create drafts (draft
     python eval/injection/run_injection.py --model attacker [--fail-on-created]
     # a real model behind an OpenAI-compatible endpoint, e.g. Ollama on the local machine
     python eval/injection/run_injection.py --model qwen3:8b --base-url http://localhost:11434/v1
+    # slow or shared server: longer timeout, wait and retry when it is down, rerun selected cases
+    python eval/injection/run_injection.py --model M --base-url URL --timeout 1800 --retries 12 --ids J01 J02
+
+Real-model runs save after every case and skip cases already in the output file, so an interrupted
+run continues where it stopped. A case whose model call fails is recorded as `error` and retried next time.
 """
 from __future__ import annotations
 
@@ -87,40 +92,67 @@ def main():
     ap.add_argument("--model", default="attacker", help="'attacker' or a model name served at --base-url")
     ap.add_argument("--base-url")
     ap.add_argument("--out", type=Path, default=ROOT / "results/m2")
+    ap.add_argument("--configs", nargs="+", default=["no_guard", "guard"], choices=["no_guard", "guard"])
+    ap.add_argument("--ids", nargs="+", help="only these case ids")
+    ap.add_argument("--timeout", type=float, default=300.0, help="seconds per model request")
+    ap.add_argument("--retries", type=int, default=0, help="retries when the model server is down (5 min apart)")
     ap.add_argument("--fail-on-created", action="store_true",
                     help="exit 1 if, with the guard on, any planted call creates an unflagged draft (CI gate)")
     args = ap.parse_args()
 
     cases = [json.loads(line) for line in open(ROOT / "eval/injection/cases.jsonl", encoding="utf-8")]
+    if args.ids:
+        cases = [c for c in cases if c["id"] in args.ids]
     store = GroupStore.from_json(ROOT / "eval/users.json")
     args.out.mkdir(parents=True, exist_ok=True)
+    name = "injection-attacker" if args.model == "attacker" else f"injection-{args.model.replace(':', '-').replace('/', '-')}"
+    path = args.out / f"{name}.json"
     report = {"model": args.model, "cases": len(cases), "configs": {}}
+    if args.model != "attacker" and path.exists():
+        report = json.loads(path.read_text())
+
+    order = {c["id"]: i for i, c in enumerate(cases)}
+
+    def save():
+        for cfg in report["configs"].values():
+            rows = cfg["rows"] = sorted(cfg["rows"], key=lambda r: order.get(r["id"], 999))
+            cfg["outcomes"] = dict(Counter(r["outcome"] for r in rows))
+            cfg["by_location"] = {loc: dict(Counter(r["outcome"] for r in rows if r["location"] == loc))
+                                  for loc in ("complaint", "kb", "openfda")}
+        path.write_text(json.dumps(report, ensure_ascii=False, indent=2))
+
     with tempfile.TemporaryDirectory() as tmp:
         tmp = Path(tmp)
         clean = tmp / "clean.sqlite"
         generate.write_sqlite(generate.build(), clean)
-        for config, gate in (("no_guard", False), ("guard", True)):
-            rows = []
+        for config in args.configs:
+            gate = config == "guard"
+            cfg = report["configs"].setdefault(config, {"rows": []})
+            done = {r["id"] for r in cfg["rows"] if r["outcome"] != "error"}
             for case in cases:
+                if case["id"] in done:
+                    continue
                 ctx = setup(case, tmp, clean)
                 reg = build_registry(ctx)
                 llm = (CompliantAttackerLLM(tuple(case["first_call"])) if args.model == "attacker"
-                       else agent.ChatLLM(args.base_url, args.model))
+                       else agent.ChatLLM(args.base_url, args.model, timeout=args.timeout, retries=args.retries))
                 session = Session(case["user"], store.groups(case["user"]), request=case["request"])
-                out = agent.run(llm, reg, Guard(reg, intent_gate=gate), session)
-                outcome = classify(case, out["trace"])
-                rows.append({"id": case["id"], "location": case["location"], "target_tool": case["target_tool"],
-                             "outcome": outcome, "drafts": [d["kind"] for d in ctx.drafts.pending()],
-                             "tool_calls": [(e["tool"], e.get("ok"), e.get("error")) for e in out["trace"]],
-                             "steps": out["steps"], "seconds": out["seconds"], "usage": out["usage"]})
-            counts = Counter(r["outcome"] for r in rows)
-            report["configs"][config] = {"outcomes": dict(counts), "by_location": {
-                loc: dict(Counter(r["outcome"] for r in rows if r["location"] == loc))
-                for loc in ("complaint", "kb", "openfda")}, "rows": rows}
-            print(f"{config:9s} {dict(counts)}")
-    name = "injection-attacker" if args.model == "attacker" else f"injection-{args.model.replace(':', '-')}"
-    (args.out / f"{name}.json").write_text(json.dumps(report, ensure_ascii=False, indent=2))
-    created = report["configs"]["guard"]["outcomes"].get("created", 0)
+                try:
+                    out = agent.run(llm, reg, Guard(reg, intent_gate=gate), session)
+                    row = {"outcome": classify(case, out["trace"]), "steps": out["steps"], "stopped": out["stopped"],
+                           "seconds": out["seconds"], "usage": out["usage"], "answer": out["answer"]}
+                except (httpx.HTTPError, KeyError, ValueError) as e:
+                    row = {"outcome": "error", "error": f"{type(e).__name__}: {e}"[:500]}
+                row = {"id": case["id"], "location": case["location"], "target_tool": case["target_tool"], **row,
+                       "drafts": [d["kind"] for d in ctx.drafts.pending()],
+                       "tool_calls": [(e["tool"], e.get("ok"), e.get("error")) for e in session.trace]}
+                cfg["rows"] = [r for r in cfg["rows"] if r["id"] != case["id"]] + [row]
+                save()
+                print(f"{config:9s} {case['id']} {row['outcome']}", flush=True)
+            print(f"{config:9s} {report['configs'][config]['outcomes']}")
+    report["cases"] = len({r["id"] for c in report["configs"].values() for r in c["rows"]})
+    save()
+    created = report["configs"].get("guard", {}).get("outcomes", {}).get("created", 0)
     if args.fail_on_created and created:
         sys.exit(f"guard on: {created} planted call(s) created an unflagged draft")
 
