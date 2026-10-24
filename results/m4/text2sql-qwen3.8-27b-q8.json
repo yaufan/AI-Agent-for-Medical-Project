@@ -1,0 +1,336 @@
+{
+  "model": "qwen3.8-27b-q8",
+  "no_think": false,
+  "questions": 19,
+  "answered": 19,
+  "matched": 11,
+  "accuracy": 0.579,
+  "rejected": 0,
+  "errors": 0,
+  "seconds": 6646.3,
+  "rows": [
+    {
+      "id": "s1_new_ct_complaints",
+      "question": "哪些站點有 C-320 這款 CT？各自收到幾件相關客訴、其中幾件已連到 CAPA？",
+      "sql": "WITH c320_sites AS (\n    SELECT DISTINCT\n        s.site_id,\n        s.name\n    FROM sites s\n    JOIN ct_scanners sc\n      ON sc.site_id = s.site_id\n    WHERE sc.model = 'C-320'\n)\nSELECT\n    cs.site_id                                   AS site_id,\n    cs.name                                      AS site_name,\n    COUNT(c.complaint_id)                        AS complaint_count,\n    COUNT(c.capa_id)                             AS capa_linked_count\nFROM c320_sites cs\nLEFT JOIN ct_scanners sc\n       ON sc.site_id = cs.site_id\n      AND sc.model = 'C-320'\nLEFT JOIN complaints c\n       ON c.scanner_id = sc.scanner_id\n      AND c.site_id = cs.site_id\nGROUP BY\n    cs.site_id,\n    cs.name\nORDER BY\n    cs.site_id;",
+      "seconds": 227.08,
+      "usage": {
+        "completion_tokens": 1085,
+        "prompt_tokens": 1634,
+        "total_tokens": 2719,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "match": false,
+      "rows": 2,
+      "gold_rows": 2
+    },
+    {
+      "id": "s1_out_of_spec_scanners",
+      "question": "哪些 CT 的預設切片厚度超過同站點部署版本的輸入規格上限？",
+      "sql": "WITH current_deployments AS (\n    SELECT\n        d.serial_no,\n        d.version,\n        ROW_NUMBER() OVER (\n            PARTITION BY d.serial_no\n            ORDER BY d.deployed_at DESC, d.deployment_id DESC\n        ) AS rn\n    FROM deployments d\n)\nSELECT DISTINCT\n    c.scanner_id,\n    c.site_id,\n    c.default_slice_thickness_mm AS default_slice_mm,\n    cd.version AS deployed_version,\n    r.max_slice_thickness_mm AS max_allowed_mm\nFROM ct_scanners c\nJOIN appliances a\n    ON a.site_id = c.site_id\nJOIN current_deployments cd\n    ON cd.serial_no = a.serial_no\n   AND cd.rn = 1\nJOIN software_releases r\n    ON r.version = cd.version\nWHERE c.default_slice_thickness_mm > r.max_slice_thickness_mm;",
+      "seconds": 1622.2,
+      "usage": {
+        "completion_tokens": 7647,
+        "prompt_tokens": 1622,
+        "total_tokens": 9269,
+        "prompt_tokens_details": {
+          "cached_tokens": 1594
+        }
+      },
+      "match": false,
+      "rows": 2,
+      "gold_rows": 2
+    },
+    {
+      "id": "s1_usage_before_after",
+      "question": "醫院B 在 2026-03 到 2026-09 每個月的處理量、QC 拒收率和每例標記數？",
+      "sql": "SELECT\n    mu.month,\n    mu.studies_processed,\n    mu.qc_reject_rate,\n    mu.marks_per_study\nFROM monthly_usage AS mu\nJOIN sites AS s\n  ON s.site_id = mu.site_id\nWHERE s.name = '醫院B'\n  AND mu.month BETWEEN '2026-03' AND '2026-09'\nORDER BY mu.month;",
+      "seconds": 65.43,
+      "usage": {
+        "completion_tokens": 312,
+        "prompt_tokens": 1643,
+        "total_tokens": 1955,
+        "prompt_tokens_details": {
+          "cached_tokens": 1594
+        }
+      },
+      "match": true,
+      "rows": 7,
+      "gold_rows": 7
+    },
+    {
+      "id": "s2_bad_lot_trace",
+      "question": "用到 SSD 批號 SSD-S1-L2508 的主機有哪些？各在哪個站點、已經發生幾次 SSD 故障？",
+      "sql": "WITH affected_serials AS (\n    SELECT DISTINCT ap.serial_no\n    FROM appliance_parts AS ap\n    JOIN part_lots AS pl\n      ON pl.lot_no = ap.lot_no\n    JOIN parts AS p\n      ON p.part_no = ap.part_no\n    WHERE pl.lot_no = 'SSD-S1-L2508'\n      AND p.category = 'SSD'\n)\nSELECT\n    a.serial_no AS serial_no,\n    s.name AS site_name,\n    COUNT(c.complaint_id) AS ssd_failure_count\nFROM affected_serials AS af\nJOIN appliances AS a\n  ON a.serial_no = af.serial_no\nJOIN sites AS s\n  ON s.site_id = a.site_id\nLEFT JOIN complaints AS c\n  ON c.serial_no = a.serial_no\n AND c.category = 'hardware_failure'\n AND c.suspected_component = 'SSD'\nGROUP BY\n    a.serial_no,\n    s.site_id,\n    s.name\nORDER BY\n    a.serial_no;",
+      "seconds": 322.74,
+      "usage": {
+        "completion_tokens": 1565,
+        "prompt_tokens": 1635,
+        "total_tokens": 3200,
+        "prompt_tokens_details": {
+          "cached_tokens": 1594
+        }
+      },
+      "match": false,
+      "rows": 6,
+      "gold_rows": 6
+    },
+    {
+      "id": "s2_failure_rate_by_lot",
+      "question": "每個 SSD 批號裝在幾台主機上、其中幾台發生過 SSD 故障、比例多少？",
+      "sql": "WITH ssd_lots AS (\n    SELECT pl.lot_no, pl.part_no\n    FROM part_lots AS pl\n    JOIN parts AS p ON p.part_no = pl.part_no\n    WHERE p.category = 'SSD'\n)\nSELECT\n    sl.lot_no,\n    COUNT(DISTINCT ap.serial_no) AS host_count,\n    COUNT(DISTINCT CASE\n        WHEN c.category = 'hardware_failure'\n         AND c.suspected_component = 'SSD'\n        THEN ap.serial_no\n    END) AS ssd_failure_host_count,\n    CASE\n        WHEN COUNT(DISTINCT ap.serial_no) = 0 THEN 0.0\n        ELSE COUNT(DISTINCT CASE\n            WHEN c.category = 'hardware_failure'\n             AND c.suspected_component = 'SSD'\n            THEN ap.serial_no\n        END) * 1.0 / COUNT(DISTINCT ap.serial_no)\n    END AS failure_rate\nFROM ssd_lots AS sl\nLEFT JOIN appliance_parts AS ap\n    ON ap.lot_no = sl.lot_no\n   AND ap.part_no = sl.part_no\nLEFT JOIN complaints AS c\n    ON c.serial_no = ap.serial_no\nGROUP BY sl.lot_no\nORDER BY sl.lot_no;",
+      "seconds": 1042.52,
+      "usage": {
+        "completion_tokens": 4964,
+        "prompt_tokens": 1628,
+        "total_tokens": 6592,
+        "prompt_tokens_details": {
+          "cached_tokens": 1594
+        }
+      },
+      "match": false,
+      "rows": 11,
+      "gold_rows": 5
+    },
+    {
+      "id": "s3_eol_gpu_exposure",
+      "question": "已公告停產的零件，在各站點還有幾台服役中的主機在用？",
+      "sql": "SELECT\n    s.site_id,\n    s.name AS site_name,\n    COUNT(DISTINCT a.serial_no) AS in_service_appliances_using_eol_parts\nFROM sites s\nJOIN appliances a\n    ON a.site_id = s.site_id\n   AND a.status = 'in_service'\nJOIN appliance_parts ap\n    ON ap.serial_no = a.serial_no\nJOIN parts p\n    ON p.part_no = ap.part_no\n   AND p.lifecycle_status = 'eol_announced'\nGROUP BY\n    s.site_id,\n    s.name\nORDER BY\n    s.site_id;",
+      "seconds": 1118.71,
+      "usage": {
+        "completion_tokens": 5310,
+        "prompt_tokens": 1622,
+        "total_tokens": 6932,
+        "prompt_tokens_details": {
+          "cached_tokens": 1594
+        }
+      },
+      "match": false,
+      "rows": 11,
+      "gold_rows": 11
+    },
+    {
+      "id": "s4_current_versions",
+      "question": "每台推論主機目前跑的軟體版本是什麼？",
+      "sql": "WITH latest_deployment AS (\n    SELECT\n        serial_no,\n        version,\n        ROW_NUMBER() OVER (\n            PARTITION BY serial_no\n            ORDER BY deployed_at DESC, deployment_id DESC\n        ) AS rn\n    FROM deployments\n)\nSELECT\n    a.serial_no,\n    s.name AS site,\n    ld.version AS current_version\nFROM appliances a\nJOIN sites s\n  ON s.site_id = a.site_id\nLEFT JOIN latest_deployment ld\n  ON ld.serial_no = a.serial_no\n AND ld.rn = 1\nORDER BY a.serial_no;",
+      "seconds": 277.77,
+      "usage": {
+        "completion_tokens": 1346,
+        "prompt_tokens": 1614,
+        "total_tokens": 2960,
+        "prompt_tokens_details": {
+          "cached_tokens": 1594
+        }
+      },
+      "match": false,
+      "rows": 21,
+      "gold_rows": 21
+    },
+    {
+      "id": "s4_overdue_capas",
+      "question": "有哪些 CAPA 已經過了到期日但還沒結案？",
+      "sql": "SELECT\n    capa_id,\n    title,\n    opened_at,\n    due_date,\n    status,\n    owner_role,\n    root_cause_category\nFROM capas\nWHERE due_date < '2026-09-30'\n  AND status <> 'closed'\nORDER BY due_date, capa_id;",
+      "seconds": 155.3,
+      "usage": {
+        "completion_tokens": 756,
+        "prompt_tokens": 1617,
+        "total_tokens": 2373,
+        "prompt_tokens_details": {
+          "cached_tokens": 1594
+        }
+      },
+      "match": true,
+      "rows": 4,
+      "gold_rows": 4
+    },
+    {
+      "id": "m01",
+      "question": "各區域各有幾家站點？",
+      "sql": "SELECT\n    region,\n    COUNT(*) AS site_count\nFROM sites\nGROUP BY region\nORDER BY region;",
+      "seconds": 26.11,
+      "usage": {
+        "completion_tokens": 125,
+        "prompt_tokens": 1612,
+        "total_tokens": 1737,
+        "prompt_tokens_details": {
+          "cached_tokens": 1594
+        }
+      },
+      "match": true,
+      "rows": 4,
+      "gold_rows": 4
+    },
+    {
+      "id": "m02",
+      "question": "2026-09 各站點處理了多少件檢查？",
+      "sql": "SELECT\n    s.site_id,\n    s.name AS site_name,\n    mu.studies_processed\nFROM monthly_usage AS mu\nJOIN sites AS s\n  ON s.site_id = mu.site_id\nWHERE mu.month = '2026-09'\nORDER BY s.site_id;",
+      "seconds": 58.92,
+      "usage": {
+        "completion_tokens": 283,
+        "prompt_tokens": 1620,
+        "total_tokens": 1903,
+        "prompt_tokens_details": {
+          "cached_tokens": 1594
+        }
+      },
+      "match": true,
+      "rows": 12,
+      "gold_rows": 12
+    },
+    {
+      "id": "m03",
+      "question": "2026-09 QC 拒收率超過 5% 的站點有哪些？拒收率多少？",
+      "sql": "SELECT\n    s.name AS site_name,\n    mu.qc_reject_rate\nFROM monthly_usage AS mu\nJOIN sites AS s\n  ON s.site_id = mu.site_id\nWHERE mu.month = '2026-09'\n  AND mu.qc_reject_rate > 0.05\nORDER BY mu.qc_reject_rate DESC;",
+      "seconds": 56.86,
+      "usage": {
+        "completion_tokens": 276,
+        "prompt_tokens": 1631,
+        "total_tokens": 1907,
+        "prompt_tokens_details": {
+          "cached_tokens": 1594
+        }
+      },
+      "match": false,
+      "rows": 2,
+      "gold_rows": 2
+    },
+    {
+      "id": "m04",
+      "question": "還沒結案的客訴，各類別有幾件？",
+      "sql": "SELECT\n    category AS category,\n    COUNT(*) AS complaint_count\nFROM complaints\nWHERE status <> 'closed'\nGROUP BY category\nORDER BY complaint_count DESC, category;",
+      "seconds": 55.37,
+      "usage": {
+        "completion_tokens": 266,
+        "prompt_tokens": 1616,
+        "total_tokens": 1882,
+        "prompt_tokens_details": {
+          "cached_tokens": 1594
+        }
+      },
+      "match": true,
+      "rows": 5,
+      "gold_rows": 5
+    },
+    {
+      "id": "m05",
+      "question": "每個軟體版本目前裝在幾台主機上？",
+      "sql": "WITH current_version AS (\n    SELECT\n        d.serial_no,\n        d.version,\n        ROW_NUMBER() OVER (\n            PARTITION BY d.serial_no\n            ORDER BY d.deployed_at DESC, d.deployment_id DESC\n        ) AS rn\n    FROM deployments d\n    JOIN appliances a\n      ON a.serial_no = d.serial_no\n    WHERE a.status = 'in_service'\n)\nSELECT\n    version AS software_version,\n    COUNT(*) AS host_count\nFROM current_version\nWHERE rn = 1\nGROUP BY version\nORDER BY host_count DESC, software_version;",
+      "seconds": 548.33,
+      "usage": {
+        "completion_tokens": 2645,
+        "prompt_tokens": 1615,
+        "total_tokens": 4260,
+        "prompt_tokens_details": {
+          "cached_tokens": 1594
+        }
+      },
+      "match": true,
+      "rows": 2,
+      "gold_rows": 2
+    },
+    {
+      "id": "m06",
+      "question": "哪些授權會在今天之後、2026 年底以前到期？",
+      "sql": "SELECT\n    license_id,\n    site_id,\n    end_date\nFROM licenses\nWHERE end_date > '2026-09-30'\n  AND end_date <= '2026-12-31'\nORDER BY end_date;",
+      "seconds": 146.77,
+      "usage": {
+        "completion_tokens": 706,
+        "prompt_tokens": 1619,
+        "total_tokens": 2325,
+        "prompt_tokens_details": {
+          "cached_tokens": 1594
+        }
+      },
+      "match": true,
+      "rows": 2,
+      "gold_rows": 2
+    },
+    {
+      "id": "m07",
+      "question": "目前有效的授權，各站點的年費合計是多少？",
+      "sql": "SELECT\n    s.site_id,\n    s.name AS site_name,\n    SUM(l.annual_fee_twd) AS total_annual_fee_twd\nFROM licenses l\nJOIN sites s\n  ON l.site_id = s.site_id\nWHERE l.start_date <= '2026-09-30'\n  AND l.end_date >= '2026-09-30'\nGROUP BY\n    s.site_id,\n    s.name\nORDER BY\n    s.site_id;",
+      "seconds": 80.76,
+      "usage": {
+        "completion_tokens": 390,
+        "prompt_tokens": 1616,
+        "total_tokens": 2006,
+        "prompt_tokens_details": {
+          "cached_tokens": 1594
+        }
+      },
+      "match": true,
+      "rows": 12,
+      "gold_rows": 12
+    },
+    {
+      "id": "m08",
+      "question": "2026 年每個月收到幾件客訴？",
+      "sql": "WITH months AS (\n    SELECT '2026-01' AS month\n    UNION ALL SELECT '2026-02'\n    UNION ALL SELECT '2026-03'\n    UNION ALL SELECT '2026-04'\n    UNION ALL SELECT '2026-05'\n    UNION ALL SELECT '2026-06'\n    UNION ALL SELECT '2026-07'\n    UNION ALL SELECT '2026-08'\n    UNION ALL SELECT '2026-09'\n    UNION ALL SELECT '2026-10'\n    UNION ALL SELECT '2026-11'\n    UNION ALL SELECT '2026-12'\n)\nSELECT\n    m.month AS month,\n    COUNT(c.complaint_id) AS complaint_count\nFROM months AS m\nLEFT JOIN complaints AS c\n    ON substr(CAST(c.received_at AS TEXT), 1, 7) = m.month\nGROUP BY m.month\nORDER BY m.month;",
+      "seconds": 473.09,
+      "usage": {
+        "completion_tokens": 2279,
+        "prompt_tokens": 1618,
+        "total_tokens": 3897,
+        "prompt_tokens_details": {
+          "cached_tokens": 1594
+        }
+      },
+      "match": false,
+      "rows": 12,
+      "gold_rows": 9
+    },
+    {
+      "id": "m09",
+      "question": "每個 CAPA 關聯了幾件客訴？",
+      "sql": "SELECT\n    c.capa_id,\n    c.title AS capa_title,\n    COUNT(co.complaint_id) AS complaint_count\nFROM capas c\nLEFT JOIN complaints co\n    ON co.capa_id = c.capa_id\nGROUP BY\n    c.capa_id,\n    c.title\nORDER BY\n    c.capa_id;",
+      "seconds": 68.04,
+      "usage": {
+        "completion_tokens": 321,
+        "prompt_tokens": 1615,
+        "total_tokens": 1936,
+        "prompt_tokens_details": {
+          "cached_tokens": 1594
+        }
+      },
+      "match": true,
+      "rows": 13,
+      "gold_rows": 13
+    },
+    {
+      "id": "m10",
+      "question": "2026-09 平均推論延遲最高的 3 個站點是哪些？",
+      "sql": "SELECT\n    s.site_id,\n    s.name,\n    mu.mean_latency_s\nFROM monthly_usage AS mu\nJOIN sites AS s\n  ON s.site_id = mu.site_id\nWHERE mu.month = '2026-09'\nORDER BY mu.mean_latency_s DESC\nLIMIT 3;",
+      "seconds": 56.79,
+      "usage": {
+        "completion_tokens": 273,
+        "prompt_tokens": 1627,
+        "total_tokens": 1900,
+        "prompt_tokens_details": {
+          "cached_tokens": 1594
+        }
+      },
+      "match": true,
+      "rows": 3,
+      "gold_rows": 3
+    },
+    {
+      "id": "m11",
+      "question": "還沒核准的設計變更申請有哪些？各關聯哪個零件或軟體版本？",
+      "sql": "SELECT\n    cr.ecr_id,\n    cr.change_type,\n    cr.title,\n    cr.status,\n    cr.opened_at,\n    cr.related_part_no,\n    p.description AS part_description,\n    cr.related_version,\n    sr.release_date AS version_release_date\nFROM change_requests AS cr\nLEFT JOIN parts AS p\n    ON p.part_no = cr.related_part_no\nLEFT JOIN software_releases AS sr\n    ON sr.version = cr.related_version\nWHERE cr.status IN ('draft', 'under_review')\nORDER BY cr.opened_at, cr.ecr_id;",
+      "seconds": 243.49,
+      "usage": {
+        "completion_tokens": 1178,
+        "prompt_tokens": 1620,
+        "total_tokens": 2798,
+        "prompt_tokens_details": {
+          "cached_tokens": 1594
+        }
+      },
+      "match": true,
+      "rows": 3,
+      "gold_rows": 3
+    }
+  ]
+}
