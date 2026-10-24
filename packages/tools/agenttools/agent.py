@@ -31,8 +31,10 @@ class LLMReply:
 
 class ChatLLM:
     def __init__(self, base_url: str, model: str, api_key: str = "none", temperature: float = 0.0,
-                 timeout: float = 300.0, transport=None, retries: int = 0, retry_wait: float = 300.0):
+                 timeout: float = 300.0, transport=None, retries: int = 0, retry_wait: float = 300.0,
+                 extra_body: dict | None = None):
         self.model, self.temperature = model, temperature
+        self.extra_body = extra_body or {}  # server-specific options, e.g. chat_template_kwargs
         # a shared local server may be stopped for a while by other jobs: wait and retry instead of failing
         self.retries, self.retry_wait = retries, retry_wait
         self.http = httpx.Client(base_url=base_url.rstrip("/"), timeout=timeout, transport=transport,
@@ -42,7 +44,7 @@ class ChatLLM:
         for attempt in range(self.retries + 1):
             t0 = time.time()
             try:
-                body = {"model": self.model, "messages": messages, "temperature": self.temperature}
+                body = {"model": self.model, "messages": messages, "temperature": self.temperature, **self.extra_body}
                 if tools:
                     body["tools"] = tools
                 r = self.http.post("/chat/completions", json=body)
