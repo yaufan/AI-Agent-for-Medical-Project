@@ -19,7 +19,7 @@ for p in ("packages/tools", "packages/rag", "packages/erpqms"):
     if str(ROOT / p) not in sys.path:
         sys.path.insert(0, str(ROOT / p))
 
-from agenttools import agent  # noqa: E402
+from agenttools import agent, text2sql  # noqa: E402
 from agenttools.core import Session  # noqa: E402
 from agenttools.drafts import APPROVER_ROLES, ApprovalError, DraftStore  # noqa: E402
 from agenttools.guard import Guard  # noqa: E402
@@ -32,6 +32,43 @@ from rag.documents import load_corpus  # noqa: E402
 from rag.retriever import Retriever  # noqa: E402
 
 KIND_LABEL = {"capa": "CAPA", "ticket": "服務工單", "notification": "客戶通知"}
+
+# Who may query the ERP + QMS with free-form questions (Text-to-SQL) and see the dashboard.
+DASHBOARD_ROLES = {"營運主管"}
+
+# Fixed dashboard panels: (title, chart, sql). Same read-only path as Text-to-SQL.
+PANELS = [
+    ("各站點每月 QC 拒收率（2026）", "line",
+     "SELECT month, site_id, qc_reject_rate FROM monthly_usage WHERE month >= '2026-01' ORDER BY month, site_id"),
+    ("未結案客訴：各類別件數", "bar",
+     "SELECT category, COUNT(*) AS n FROM complaints WHERE status <> 'closed' GROUP BY category ORDER BY n DESC"),
+    ("各軟體版本的主機數（目前版本）", "bar",
+     "SELECT dep.version, COUNT(*) AS appliances FROM appliances a JOIN deployments dep ON dep.serial_no = a.serial_no "
+     "WHERE dep.deployed_at = (SELECT MAX(d2.deployed_at) FROM deployments d2 WHERE d2.serial_no = a.serial_no) "
+     "GROUP BY dep.version ORDER BY dep.version"),
+    ("逾期未結案的 CAPA", "table",
+     f"SELECT capa_id, title, due_date, status, owner_role FROM capas WHERE status <> 'closed' "
+     f"AND due_date < '{text2sql.AS_OF}' ORDER BY due_date"),
+    ("停產零件：各站點服役中主機數", "bar",
+     "SELECT a.site_id, COUNT(*) AS appliances FROM parts p JOIN appliance_parts ap ON ap.part_no = p.part_no "
+     "JOIN appliances a ON a.serial_no = ap.serial_no WHERE p.lifecycle_status = 'eol_announced' "
+     "AND a.status = 'in_service' GROUP BY a.site_id ORDER BY a.site_id"),
+    ("2026 年底前到期的授權", "table",
+     f"SELECT license_id, site_id, end_date, annual_fee_twd FROM licenses WHERE end_date > '{text2sql.AS_OF}' "
+     "AND end_date <= '2026-12-31' ORDER BY end_date"),
+]
+
+
+@dataclass
+class Table:
+    title: str
+    sql: str
+    columns: list[str]
+    rows: list[tuple]
+    chart: str = "table"      # table / bar / line
+    error: str = ""
+    seconds: float = 0.0
+    usage: dict | None = None
 
 
 class RecordingGuard(Guard):
@@ -76,6 +113,7 @@ class Backend:
         self.drafts = DraftStore(data_dir / "drafts.sqlite")
         self.ctx = Context(db, self.drafts, Retriever(chunk_corpus(docs, "structured")), http_transport=http_transport)
         self.registry = build_registry(self.ctx)
+        self.sql = text2sql.connect(db)
         self.llm_base_url, self.llm_model, self.llm_api_key = llm_base_url, llm_model, llm_api_key
 
     @classmethod
@@ -104,6 +142,35 @@ class Backend:
             sources = out["sources"]
         created = [d for d in self.drafts.pending() if d["draft_id"] not in before and d["requested_by"] == user]
         return Turn(out["answer"] or "（模型沒有產生回答）", guard.calls, sources, created, out["seconds"], self.mode)
+
+    def can_query(self, user: str) -> bool:
+        return self.users.get(user) in DASHBOARD_ROLES
+
+    def dashboard(self, user: str) -> list[Table]:
+        if not self.can_query(user):
+            raise PermissionError("dashboard is for operations managers")
+        out = []
+        for title, chart, sql in PANELS:
+            cols, rows = text2sql.run_sql(self.sql, sql)
+            out.append(Table(title, sql, cols, rows, chart))
+        return out
+
+    def ask_sql(self, user: str, question: str) -> Table:
+        """Text-to-SQL. The model sees the schema and the question only; rows are shown, never sent back."""
+        if not self.can_query(user):
+            raise PermissionError("free-form database questions are for operations managers")
+        if not (self.llm_base_url and self.llm_model):
+            return Table(question, "", [], [], error="自由提問要先設定模型（ASSISTANT_LLM_BASE_URL、ASSISTANT_LLM_MODEL）；"
+                                                     "沒有模型時請用「營運總覽」看固定報表。")
+        llm = agent.ChatLLM(self.llm_base_url, self.llm_model, api_key=self.llm_api_key, timeout=1800)
+        meta = text2sql.ask(llm, question)
+        try:
+            cols, rows = text2sql.run_sql(self.sql, meta["sql"])
+        except text2sql.SQLRejected as e:
+            return Table(question, meta["sql"], [], [], error=f"查詢被拒絕：{e}", seconds=meta["seconds"],
+                         usage=meta["usage"])
+        return Table(question, meta["sql"], cols, rows, guess_chart(cols, rows), seconds=meta["seconds"],
+                     usage=meta["usage"])
 
     def can_approve(self, user: str, kind: str) -> bool:
         return self.users.get(user) in APPROVER_ROLES.get(kind, set())
@@ -136,6 +203,27 @@ def sources_from_calls(calls: list[dict]) -> list[str]:
         elif c["kind"] == "read":
             out.append(f"{c['tool']}({', '.join(f'{k}={v}' for k, v in c['args'].items())})")
     return list(dict.fromkeys(out))
+
+
+def guess_chart(columns: list[str], rows: list[tuple]) -> str:
+    """A chart only when the shape is obvious: one label column and one number (bar), or a month axis."""
+    if not rows or len(rows) > 60:
+        return "table"
+    numeric = [i for i in range(len(columns)) if all(isinstance(r[i], (int, float)) for r in rows)]
+    if "month" in columns and numeric:
+        return "line"
+    if len(columns) == 2 and numeric == [1]:
+        return "bar"
+    return "table"
+
+
+def markdown_table(columns: list[str], rows: list[tuple], limit: int = 30) -> str:
+    if not columns:
+        return ""
+    head = "| " + " | ".join(columns) + " |\n|" + "---|" * len(columns) + "\n"
+    body = "\n".join("| " + " | ".join("" if v is None else str(v) for v in r) + " |" for r in rows[:limit])
+    more = f"\n\n（共 {len(rows)} 列，只顯示前 {limit} 列）" if len(rows) > limit else ""
+    return head + body + more
 
 
 def describe_draft(d: dict) -> str:

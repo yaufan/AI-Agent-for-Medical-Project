@@ -47,3 +47,41 @@ def test_sources_from_agent_calls():
               "result": {"capa": {"capa_id": "CAPA-2026-007"}}},
              {"tool": "site_overview", "ok": False, "kind": "read", "args": {"site_id": "H-Z"}, "result": {}}]
     assert sources_from_calls(calls) == ["CAPA-2026-007"]
+
+
+def test_dashboard_is_for_operations_managers_only(tmp_path):
+    b = make(tmp_path)
+    panels = b.dashboard("ops_mgr_tsai")
+    assert len(panels) == 6 and all(p.rows for p in panels if p.title != "2026 年底前到期的授權")
+    overdue = next(p for p in panels if "CAPA" in p.title)
+    assert "CAPA-2026-007" in {r[0] for r in overdue.rows}
+    import pytest
+    with pytest.raises(PermissionError):
+        b.dashboard("qa_lin")
+    with pytest.raises(PermissionError):
+        b.ask_sql("contractor_lee", "SELECT * FROM licenses")
+
+
+def test_text_to_sql_needs_a_model_and_runs_only_reads(tmp_path, monkeypatch):
+    import backend
+    from agenttools.agent import LLMReply
+    from agenttools.testing import ScriptedLLM
+
+    b = make(tmp_path)
+    assert "設定模型" in b.ask_sql("ops_mgr_tsai", "各區域各有幾家站點？").error
+
+    b.llm_base_url, b.llm_model = "http://model.invalid/v1", "m"
+    replies = iter(["```sql\nSELECT region, COUNT(*) AS sites FROM sites GROUP BY region\n```",
+                    "```sql\nDELETE FROM complaints\n```"])
+    monkeypatch.setattr(backend.agent, "ChatLLM", lambda *a, **k: ScriptedLLM([LLMReply(next(replies), [], 0.1)]))
+    t = b.ask_sql("ops_mgr_tsai", "各區域各有幾家站點？")
+    assert t.chart == "bar" and sorted(r[1] for r in t.rows) == [2, 3, 3, 4]
+    bad = b.ask_sql("ops_mgr_tsai", "把客訴清空")
+    assert bad.error.startswith("查詢被拒絕") and bad.rows == []
+
+
+def test_chart_guess():
+    from backend import guess_chart
+    assert guess_chart(["site", "n"], [("H-A", 1)]) == "bar"
+    assert guess_chart(["month", "n"], [("2026-01", 1)]) == "line"
+    assert guess_chart(["a", "b", "c"], [("x", "y", 1)]) == "table"

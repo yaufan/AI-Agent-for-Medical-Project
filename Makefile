@@ -4,6 +4,7 @@ install:
 	pip install ./packages/lungnod -r services/cad-service/requirements-dev.txt
 	pip install "./packages/rag[pdf,test]"
 	pip install -e "./packages/tools[test]"
+	pip install -r apps/assistant-ui/requirements.txt
 
 test:
 	python -m pytest -q packages/lungnod/tests
@@ -24,6 +25,7 @@ eval-m1: corpus
 
 eval-m2:
 	python eval/injection/run_injection.py --fail-on-created
+	python eval/text2sql/run_text2sql.py --model gold --fail-below 1.0
 
 # demo UI: pip install -r apps/assistant-ui/requirements.txt first
 ui:

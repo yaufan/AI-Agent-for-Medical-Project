@@ -35,8 +35,10 @@ def directives(text: str) -> list[tuple[str, str]]:
 class ScriptedLLM:
     def __init__(self, replies: list[LLMReply]):
         self.replies = list(replies)
+        self.seen: list[list[dict]] = []  # the messages of every call, for assertions
 
     def chat(self, messages, tools):
+        self.seen.append([dict(m) for m in messages])
         return self.replies.pop(0)
 
 

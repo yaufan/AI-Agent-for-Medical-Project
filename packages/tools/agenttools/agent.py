@@ -42,8 +42,10 @@ class ChatLLM:
         for attempt in range(self.retries + 1):
             t0 = time.time()
             try:
-                r = self.http.post("/chat/completions", json={"model": self.model, "messages": messages,
-                                                              "tools": tools, "temperature": self.temperature})
+                body = {"model": self.model, "messages": messages, "temperature": self.temperature}
+                if tools:
+                    body["tools"] = tools
+                r = self.http.post("/chat/completions", json=body)
                 if r.status_code < 500:
                     break
             except httpx.TransportError:

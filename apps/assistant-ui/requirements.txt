@@ -1,1 +1,2 @@
 chainlit==2.12.0
+plotly==6.3.1

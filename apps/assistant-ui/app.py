@@ -15,7 +15,7 @@ from pathlib import Path
 import chainlit as cl
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from backend import Backend, describe_draft, is_tainted, short_json  # noqa: E402
+from backend import Backend, Table, describe_draft, is_tainted, markdown_table, short_json  # noqa: E402
 
 BACKEND = Backend.from_env()
 
@@ -28,7 +28,50 @@ STARTERS = {
     "ra_huang": ["OEB 最近有哪些 510(k)？", "OEB 有沒有召回紀錄？", "NoduleAssist 2.0 預計什麼時候提出 510(k)？"],
     "contractor_lee": ["NoduleAssist 2.0 預計什麼時候提出 510(k)？", "站點新增 CT 掃描儀時，安裝程序要求做哪些檢查？"],
     "qa_mgr_chou": ["待核准", "稽核紀錄"],
+    "ops_mgr_tsai": ["營運總覽", "2026-09 QC 拒收率超過 5% 的站點有哪些？", "每個軟體版本目前裝在幾台主機上？",
+                     "哪些 CAPA 已經過了到期日但還沒結案？"],
 }
+
+
+def figure(t: Table):
+    """Plotly figure for a bar or line table; None for plain tables."""
+    import plotly.graph_objects as go
+
+    if t.chart == "bar":
+        fig = go.Figure(go.Bar(x=[str(r[0]) for r in t.rows], y=[r[1] for r in t.rows]))
+        fig.update_layout(xaxis_title=t.columns[0], yaxis_title=t.columns[1])
+    elif t.chart == "line":
+        m = t.columns.index("month")
+        nums = [i for i in range(len(t.columns)) if i != m and all(isinstance(r[i], (int, float)) for r in t.rows)]
+        labels = [i for i in range(len(t.columns)) if i not in nums and i != m]
+        fig = go.Figure()
+        if labels:  # one line per label, first numeric column as the value
+            for key in sorted({r[labels[0]] for r in t.rows}):
+                pts = [r for r in t.rows if r[labels[0]] == key]
+                fig.add_trace(go.Scatter(x=[r[m] for r in pts], y=[r[nums[0]] for r in pts], mode="lines", name=str(key)))
+            fig.update_layout(yaxis_title=t.columns[nums[0]])
+        else:
+            for i in nums:
+                fig.add_trace(go.Scatter(x=[r[m] for r in t.rows], y=[r[i] for r in t.rows], mode="lines",
+                                         name=t.columns[i]))
+    else:
+        return None
+    fig.update_layout(title=t.title, height=360, margin=dict(l=40, r=20, t=50, b=40))
+    return fig
+
+
+async def show_table(t: Table):
+    if t.sql:
+        async with cl.Step(name="SQL（唯讀）", type="tool", show_input=False) as step:
+            step.output = f"```sql\n{t.sql}\n```"
+    if t.error:
+        await cl.Message(f"**{t.title}**\n\n⛔ {t.error}").send()
+        return
+    fig = figure(t)
+    elements = [cl.Plotly(name="chart", figure=fig, display="inline")] if fig is not None else []
+    table = markdown_table(t.columns, t.rows) if t.chart == "table" or len(t.rows) <= 12 else ""
+    extra = f"\n\n*{t.seconds} 秒*" if t.seconds else ""
+    await cl.Message(f"**{t.title}**（{len(t.rows)} 列）\n\n{table}{extra}", elements=elements).send()
 
 
 def md(text: str) -> str:
@@ -120,6 +163,13 @@ async def handle(text: str):
         return
     if text in ("稽核紀錄", "/audit"):
         await show_audit()
+        return
+    if BACKEND.can_query(user):
+        if text in ("營運總覽", "/dashboard"):
+            for t in await cl.make_async(BACKEND.dashboard)(user):
+                await show_table(t)
+        else:
+            await show_table(await cl.make_async(BACKEND.ask_sql)(user, text))
         return
 
     turn = await cl.make_async(BACKEND.ask)(user, text)

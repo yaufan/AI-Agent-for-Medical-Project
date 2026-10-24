@@ -60,6 +60,8 @@ jobs:
         run: python -m pytest -q packages/tools/tests
       - name: Injection suite (worst-case model; fails on any unflagged draft with the guard on)
         run: python eval/injection/run_injection.py --out /tmp/m2 --fail-on-created
+      - name: Text-to-SQL gold queries and result comparison
+        run: python eval/text2sql/run_text2sql.py --model gold --fail-below 1.0
       - name: Demo UI backend (no Chainlit needed)
         run: python -m pytest -q apps/assistant-ui/tests
 

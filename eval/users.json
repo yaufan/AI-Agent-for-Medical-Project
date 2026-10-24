@@ -6,6 +6,7 @@
     "rd_chen":        {"role": "研發工程師（2.0 專案）", "groups": ["internal", "proj-b"]},
     "ra_huang":       {"role": "法規專員",          "groups": ["internal", "proj-a", "proj-b"]},
     "contractor_lee": {"role": "外部顧問",          "groups": []},
-    "qa_mgr_chou":    {"role": "品保主管",          "groups": ["internal", "proj-a"]}
+    "qa_mgr_chou":    {"role": "品保主管",          "groups": ["internal", "proj-a"]},
+    "ops_mgr_tsai":   {"role": "營運主管",          "groups": ["internal", "proj-a", "proj-b"]}
   }
 }

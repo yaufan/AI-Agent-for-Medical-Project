@@ -1,6 +1,6 @@
 # assistant-ui：公司 M 內部助理示範介面（Chainlit）
 
-給面試或展示用的聊天介面，接在 `packages/tools` 的工具與守門上。可以切換身分（品保、服務、研發、法規、外部顧問、品保主管），看到每一次工具呼叫的參數與回傳內容，以品保主管身分核准或退回草稿，查看稽核紀錄。
+給面試或展示用的聊天介面，接在 `packages/tools` 的工具與守門上。可以切換身分（品保、服務、研發、法規、外部顧問、品保主管、營運主管），看到每一次工具呼叫的參數與回傳內容，以品保主管身分核准或退回草稿，查看稽核紀錄；營運主管有固定報表與 Text-to-SQL 自由提問。四個場景的示範腳本見 [`docs/demo.md`](../../docs/demo.md)。
 
 *English summary: a Chainlit demo on top of the tools and guard. Switch personas, see every tool call with its arguments and result, approve or reject drafts as the QA manager, view the append-only audit log. Runs without a model (fixed workflow) or with any OpenAI-compatible server.*
 
@@ -38,4 +38,5 @@ ASSISTANT_LLM_BASE_URL=http://localhost:8000/v1 ASSISTANT_LLM_MODEL=qwen3.8-27b-
 - 身分用選單切換，只是示範；正式環境身分要來自公司帳號（例如 Keycloak），選單不能決定權限。
 - 沒有登入、沒有對話紀錄保存。草稿與稽核紀錄存在 `data/synthetic/drafts.sqlite`，刪掉就重置。
 - 模型模式下工具呼叫是整輪結束後一次顯示，不是即時串流。
-- Text-to-SQL 儀表板（場景 4）還沒做。
+- Text-to-SQL 只開放營運主管，查詢全部資料表；沒有依欄位或站點再細分權限。
+- 報表的圖只在形狀明顯時才畫（一個標籤欄加一個數字欄，或有 month 欄），其他只顯示表格。
