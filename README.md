@@ -23,7 +23,7 @@
 | M1 | 附權限過濾的混合檢索與評估 | 完成（[結果](results/m1/)）：向量＋重排序 Recall@10 0.986；Qdrant／pgvector、Docling 比較與題庫人工審查未做 |
 | M2 | MCP 工具、人工核准、注入測試 | 完成：Qwen3.8-27B 情境任務 10/10、注入 23 題未照做（1 題逾時）；固定流程對照 9/10；見 `results/m2/` |
 | M3 | 地端模型比較、gateway 分級路由、部署 | 未開始 |
-| M4 | 示範介面、端到端情境 | 進行中：Chainlit 介面、四個場景示範（[`docs/demo.md`](docs/demo.md)）、營運總覽與 Text-to-SQL 完成；Text-to-SQL 真實模型評估未跑 |
+| M4 | 示範介面、端到端情境 | 完成：Chainlit 介面、四個場景示範（[`docs/demo.md`](docs/demo.md)）、營運總覽、Text-to-SQL（Qwen3.8-27B 自動比對 11/19，人工逐題看 8 題不符中 6 題只是欄位不同；見 `results/m4/`）；領域切換未做 |
 
 ## 結構
 
