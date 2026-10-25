@@ -1,6 +1,6 @@
 # M3 結果：模型與部署
 
-*English summary: in progress. Done so far: the routing gateway and its evaluation (no model calls). With cloud allowed up to internal data, 7 of 30 cases sent something sensitive to the cloud — all of them cases the labels are not designed to catch (confidential facts typed by the user without a code name, personal data written in unusual forms, a confidential fact copied into an internal document); allowing public data only sent nothing but kept every call local. Model comparison, answer quality, the real Claude run and the engine load test are not done yet.*
+*English summary: in progress. Done so far: the API service with a timed kind rollout in CI (deploy 3.3 s, update 2.8 s, rollback 3.7 s, version verified after each step), and the routing gateway and its evaluation (no model calls). With cloud allowed up to internal data, 7 of 30 cases sent something sensitive to the cloud — all of them cases the labels are not designed to catch (confidential facts typed by the user without a code name, personal data written in unusual forms, a confidential fact copied into an internal document); allowing public data only sent nothing but kept every call local. Model comparison, answer quality, the real Claude run and the engine load test are not done yet.*
 
 ## 已完成：分級路由（`routing.json`）
 
@@ -51,6 +51,24 @@
 
   改完要用新的題目重量，不能只拿這 30 題調到滿分。
 
+## 已完成：服務化與部署（`services/assistant-api`）
+
+- **API 服務**：用 FastAPI 包裝和示範介面相同的後端。
+  - 身分由前面登入代理設定的 `X-User` 標頭決定。
+  - 草稿、核准、稽核、營運報表都有測試。
+- **映像**：不用 root 執行，根檔案系統唯讀。
+- **kind 部署計時**：CI 的 `assistant-api` job 每次都跑（`deploy/kind-timing.sh`）。每一步都等到 `rollout status` 完成，再從就緒的 Pod 讀 `/version`，確認新版本真的在服務。
+
+| 步驟 | 秒數（CI run 40181746475，GitHub 主機上的 kind） | 確認的版本 |
+|---|---|---|
+| 部署 0.1.0 | 3.3 | 0.1.0 |
+| 更新到 0.2.0 | 2.8 | 0.2.0 |
+| 回滾 | 3.7 | 0.1.0 |
+
+- 秒數從 `kubectl apply`／`set image`／`rollout undo` 開始，算到 rollout 完成；映像已經事先載入節點，**不含**拉映像的時間。
+- 只跑一次、單一副本、沒有負載，只能看量級。之前另一次執行的數字是 3.5／2.9／2.9 秒；那次更新後的版本檢查失敗，所以改成現在的檢查方式。
+- 服務啟動時不載入公開 PDF，所以就緒得快；載入 PDF 時要多加約半分鐘（見介面的 README）。
+
 ## 尚未完成
 
 | 項目 | 狀態 |
@@ -58,4 +76,3 @@
 | 模型比較 A（Qwen3.8-27B Q8）／B（同模型 Q4）／C（8B 小模型）：情境任務、注入、回答品質、Text-to-SQL v2 | 沒做：程式已備好，要在 gx10-01 跑 |
 | 雲端模型（Claude Opus 5.5）同一套題目 | 沒做：需要在環境設定 `ANTHROPIC_API_KEY` |
 | 推論引擎比較（llama.cpp／vLLM／Ollama，同時 1、2、4、8 人） | 沒做：`eval/load/run_load.py` 已備好，要在機器空閒時跑 |
-| FastAPI 服務、kind 部署、部署與回滾秒數 | 沒做 |
