@@ -62,6 +62,10 @@ jobs:
         run: python eval/injection/run_injection.py --out /tmp/m2 --fail-on-created
       - name: Text-to-SQL gold queries and result comparison
         run: python eval/text2sql/run_text2sql.py --model gold --fail-below 1.0
+      - name: Text-to-SQL v2 gold queries
+        run: python eval/text2sql/run_text2sql.py --model gold --bank v2 --fail-below 1.0
+      - name: Routing evaluation (no model calls)
+        run: python eval/routing/run_routing.py --out /tmp/m3
       - name: Demo UI backend (no Chainlit needed)
         run: python -m pytest -q apps/assistant-ui/tests
 

@@ -28,6 +28,8 @@ class Session:
     request: str = ""         # the user's own words for this turn (used by the write policy)
     trace: list[dict] = field(default_factory=list)
     untrusted_seen: list[str] = field(default_factory=list)  # third-party text returned by tools this turn
+    data_level: int = 0       # highest sensitivity of anything tools returned this turn (sensitivity.py)
+    data_reasons: list[str] = field(default_factory=list)
 
 
 @dataclass

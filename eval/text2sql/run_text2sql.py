@@ -29,7 +29,7 @@ ROOT = Path(__file__).resolve().parents[2]
 for p in ("packages/tools", "packages/erpqms"):
     sys.path.insert(0, str(ROOT / p))
 
-from agenttools import agent, text2sql  # noqa: E402
+from agenttools import backends, text2sql  # noqa: E402
 from erpqms import generate  # noqa: E402
 
 
@@ -37,20 +37,27 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--model", required=True, help="'gold' or a model name served at --base-url")
     ap.add_argument("--base-url")
+    ap.add_argument("--provider", choices=["openai", "anthropic"], default="openai",
+                    help="openai: OpenAI-compatible server at --base-url; anthropic: Claude via the Anthropic SDK")
     ap.add_argument("--timeout", type=float, default=300.0)
     ap.add_argument("--retries", type=int, default=0)
     ap.add_argument("--out", type=Path, default=ROOT / "results/m4")
     ap.add_argument("--fail-below", type=float, help="exit 1 if accuracy is below this (CI)")
+    ap.add_argument("--bank", choices=["v1", "v2"], default="v1",
+                    help="v2: the same questions and gold SQL, each question naming the columns to return")
     ap.add_argument("--no-think", action="store_true",
                     help="ask the server to skip the reasoning phase (chat_template_kwargs.enable_thinking=false)")
     args = ap.parse_args()
 
-    questions = [json.loads(line) for line in open(ROOT / "eval/text2sql/questions.jsonl", encoding="utf-8")]
+    bank = "questions.jsonl" if args.bank == "v1" else "questions_v2.jsonl"
+    questions = [json.loads(line) for line in open(ROOT / "eval/text2sql" / bank, encoding="utf-8")]
     order = {q["id"]: i for i, q in enumerate(questions)}
     extra = {"chat_template_kwargs": {"enable_thinking": False}} if args.no_think else None
-    llm = None if args.model == "gold" else agent.ChatLLM(args.base_url, args.model, timeout=args.timeout,
-                                                         retries=args.retries, extra_body=extra)
-    name = args.model.replace(":", "-").replace("/", "-") + ("-nothink" if args.no_think else "")
+    # Text-to-SQL sends only the schema and the question (internal at most), so no gateway is needed here
+    llm = None if args.model == "gold" else backends.make_llm(args.provider, args.model, args.base_url,
+                                                              args.timeout, args.retries, extra_body=extra)
+    name = (args.model.replace(":", "-").replace("/", "-") + ("-nothink" if args.no_think else "")
+            + ("-v2" if args.bank == "v2" else ""))
     path = args.out / f"text2sql-{name}.json"
     rows = json.loads(path.read_text())["rows"] if llm is not None and path.exists() else []
     done = {r["id"] for r in rows if "error" not in r}
@@ -58,7 +65,7 @@ def main():
     def summary():
         rows.sort(key=lambda r: order.get(r["id"], 999))
         acc = sum(r["match"] for r in rows) / len(questions)
-        return {"model": args.model, "no_think": args.no_think, "questions": len(questions), "answered": len(rows),
+        return {"model": args.model, "bank": args.bank, "no_think": args.no_think, "questions": len(questions), "answered": len(rows),
                 "matched": sum(r["match"] for r in rows), "accuracy": round(acc, 3),
                 "rejected": sum("rejected" in r for r in rows), "errors": sum("error" in r for r in rows),
                 "seconds": round(sum(r.get("seconds", 0) for r in rows), 1), "rows": rows}
@@ -88,7 +95,7 @@ def main():
                 row.update(match=text2sql.results_match(gold, pred), rows=len(pred[1]), gold_rows=len(gold[1]))
             except text2sql.SQLRejected as e:
                 row.update(match=False, rejected=str(e))
-            except (httpx.HTTPError, KeyError, ValueError) as e:
+            except backends.ERRORS as e:
                 row.update(match=False, error=f"{type(e).__name__}: {e}"[:300])
             rows[:] = [r for r in rows if r["id"] != q["id"]] + [row]
             save()

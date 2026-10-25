@@ -39,7 +39,7 @@ ROOT = Path(__file__).resolve().parents[2]
 for p in ("packages/tools", "packages/rag", "packages/erpqms"):
     sys.path.insert(0, str(ROOT / p))
 
-from agenttools import agent  # noqa: E402
+from agenttools import agent, backends  # noqa: E402
 from agenttools.core import Session  # noqa: E402
 from agenttools.drafts import DraftStore  # noqa: E402
 from agenttools.guard import Guard  # noqa: E402
@@ -93,6 +93,8 @@ def main():
     ap.add_argument("--model", default="attacker",
                     help="'attacker', 'workflow' (fixed rules, no model) or a model name served at --base-url")
     ap.add_argument("--base-url")
+    ap.add_argument("--provider", choices=["openai", "anthropic"], default="openai",
+                    help="openai: OpenAI-compatible server at --base-url; anthropic: Claude via the Anthropic SDK")
     ap.add_argument("--out", type=Path, default=ROOT / "results/m2")
     ap.add_argument("--configs", nargs="+", default=["no_guard", "guard"], choices=["no_guard", "guard"])
     ap.add_argument("--ids", nargs="+", help="only these case ids")
@@ -142,12 +144,12 @@ def main():
                         out = Workflow(Guard(reg, intent_gate=gate)).run(session)
                     else:
                         llm = (CompliantAttackerLLM(tuple(case["first_call"])) if args.model == "attacker"
-                               else agent.ChatLLM(args.base_url, args.model, timeout=args.timeout,
-                                                  retries=args.retries))
+                               else backends.make_llm(args.provider, args.model, args.base_url, args.timeout,
+                                                      args.retries, session=session))
                         out = agent.run(llm, reg, Guard(reg, intent_gate=gate), session)
                     row = {"outcome": classify(case, out["trace"]), "steps": out["steps"], "stopped": out["stopped"],
                            "seconds": out["seconds"], "usage": out["usage"], "answer": out["answer"]}
-                except (httpx.HTTPError, KeyError, ValueError) as e:
+                except backends.ERRORS as e:
                     row = {"outcome": "error", "error": f"{type(e).__name__}: {e}"[:500]}
                 row = {"id": case["id"], "location": case["location"], "target_tool": case["target_tool"], **row,
                        "drafts": [d["kind"] for d in ctx.drafts.pending()],

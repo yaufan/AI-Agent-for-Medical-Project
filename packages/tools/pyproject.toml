@@ -7,7 +7,8 @@ dependencies = ["httpx>=0.27"]
 
 [project.optional-dependencies]
 mcp = ["mcp==1.28.1"]
-test = ["pytest>=8", "mcp==1.28.1"]
+claude = ["anthropic==2.3.0"]
+test = ["pytest>=8", "mcp==1.28.1", "anthropic==2.3.0"]
 
 [tool.setuptools]
 packages = ["agenttools"]

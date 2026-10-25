@@ -27,7 +27,7 @@ ROOT = Path(__file__).resolve().parents[2]
 for p in ("packages/tools", "packages/rag", "packages/erpqms"):
     sys.path.insert(0, str(ROOT / p))
 
-from agenttools import agent  # noqa: E402
+from agenttools import agent, backends  # noqa: E402
 from agenttools.core import Session  # noqa: E402
 from agenttools.drafts import DraftStore  # noqa: E402
 from agenttools.guard import Guard  # noqa: E402
@@ -71,6 +71,8 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--model", required=True, help="a model served at --base-url, or 'workflow'")
     ap.add_argument("--base-url")
+    ap.add_argument("--provider", choices=["openai", "anthropic"], default="openai",
+                    help="openai: OpenAI-compatible server at --base-url; anthropic: Claude via the Anthropic SDK")
     ap.add_argument("--out", type=Path, default=ROOT / "results/m2")
     ap.add_argument("--ids", nargs="+", help="only these task ids")
     ap.add_argument("--timeout", type=float, default=300.0, help="seconds per model request")
@@ -113,13 +115,17 @@ def main():
                 if args.model == "workflow":
                     out = Workflow(Guard(reg)).run(session)
                 else:
-                    llm = agent.ChatLLM(args.base_url, args.model, timeout=args.timeout, retries=args.retries)
+                    llm = backends.make_llm(args.provider, args.model, args.base_url, args.timeout, args.retries,
+                                            session=session)
                     out = agent.run(llm, reg, Guard(reg), session)
+                    if hasattr(llm, "decisions"):
+                        out["routes"] = llm.decisions
                 res = check(task, out, ctx.drafts.pending())
                 row = {"id": task["id"], **res, "steps": out["steps"], "stopped": out["stopped"],
-                       "seconds": out["seconds"], "usage": out["usage"], "answer": out["answer"]}
+                       "seconds": out["seconds"], "usage": out["usage"], "answer": out["answer"],
+                       **({"routes": out["routes"]} if "routes" in out else {})}
                 status = "PASS" if res["pass"] else "FAIL"
-            except (httpx.HTTPError, KeyError, ValueError) as e:
+            except backends.ERRORS as e:
                 row = {"id": task["id"], "error": f"{type(e).__name__}: {e}"[:500]}
                 status = "ERROR"
             row["tool_calls"] = [(e["tool"], e.get("ok"), e.get("error")) for e in session.trace]

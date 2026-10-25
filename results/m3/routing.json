@@ -1,0 +1,1923 @@
+{
+  "cases": 30,
+  "policies": {
+    "cloud<=internal": {
+      "total": {
+        "cases": 30,
+        "leaked_cases": 7,
+        "leaked_calls": 10,
+        "over_blocked_calls": 2,
+        "cloud_calls": 44,
+        "local_calls": 16
+      },
+      "by_category": {
+        "public": {
+          "cases": 4,
+          "leaked_cases": 0,
+          "leaked_calls": 0,
+          "over_blocked_calls": 0,
+          "cloud_calls": 8,
+          "local_calls": 0
+        },
+        "internal": {
+          "cases": 6,
+          "leaked_cases": 0,
+          "leaked_calls": 0,
+          "over_blocked_calls": 0,
+          "cloud_calls": 13,
+          "local_calls": 0
+        },
+        "confidential_retrieved": {
+          "cases": 4,
+          "leaked_cases": 0,
+          "leaked_calls": 0,
+          "over_blocked_calls": 0,
+          "cloud_calls": 5,
+          "local_calls": 4
+        },
+        "confidential_named": {
+          "cases": 2,
+          "leaked_cases": 0,
+          "leaked_calls": 0,
+          "over_blocked_calls": 2,
+          "cloud_calls": 0,
+          "local_calls": 3
+        },
+        "confidential_typed": {
+          "cases": 3,
+          "leaked_cases": 3,
+          "leaked_calls": 4,
+          "over_blocked_calls": 0,
+          "cloud_calls": 4,
+          "local_calls": 1
+        },
+        "pii_typed": {
+          "cases": 3,
+          "leaked_cases": 0,
+          "leaked_calls": 0,
+          "over_blocked_calls": 0,
+          "cloud_calls": 0,
+          "local_calls": 6
+        },
+        "pii_typed_unusual": {
+          "cases": 2,
+          "leaked_cases": 2,
+          "leaked_calls": 4,
+          "over_blocked_calls": 0,
+          "cloud_calls": 4,
+          "local_calls": 0
+        },
+        "pii_in_data": {
+          "cases": 2,
+          "leaked_cases": 0,
+          "leaked_calls": 0,
+          "over_blocked_calls": 0,
+          "cloud_calls": 2,
+          "local_calls": 2
+        },
+        "pii_in_data_unusual": {
+          "cases": 1,
+          "leaked_cases": 1,
+          "leaked_calls": 1,
+          "over_blocked_calls": 0,
+          "cloud_calls": 2,
+          "local_calls": 0
+        },
+        "confidential_mislabelled": {
+          "cases": 1,
+          "leaked_cases": 1,
+          "leaked_calls": 1,
+          "over_blocked_calls": 0,
+          "cloud_calls": 2,
+          "local_calls": 0
+        },
+        "no_access": {
+          "cases": 2,
+          "leaked_cases": 0,
+          "leaked_calls": 0,
+          "over_blocked_calls": 0,
+          "cloud_calls": 4,
+          "local_calls": 0
+        }
+      },
+      "rows": [
+        {
+          "id": "R01",
+          "category": "public",
+          "calls": [
+            {
+              "backend": "cloud",
+              "level": "internal",
+              "reasons": [],
+              "oracle_sensitive": false,
+              "oracle_hits": []
+            },
+            {
+              "backend": "cloud",
+              "level": "internal",
+              "reasons": [
+                "tool:search_510k"
+              ],
+              "oracle_sensitive": false,
+              "oracle_hits": []
+            }
+          ],
+          "leaked_calls": 0,
+          "over_blocked_calls": 0,
+          "cloud_calls": 2,
+          "local_calls": 0
+        },
+        {
+          "id": "R02",
+          "category": "public",
+          "calls": [
+            {
+              "backend": "cloud",
+              "level": "internal",
+              "reasons": [],
+              "oracle_sensitive": false,
+              "oracle_hits": []
+            },
+            {
+              "backend": "cloud",
+              "level": "internal",
+              "reasons": [],
+              "oracle_sensitive": false,
+              "oracle_hits": []
+            }
+          ],
+          "leaked_calls": 0,
+          "over_blocked_calls": 0,
+          "cloud_calls": 2,
+          "local_calls": 0
+        },
+        {
+          "id": "R03",
+          "category": "public",
+          "calls": [
+            {
+              "backend": "cloud",
+              "level": "internal",
+              "reasons": [],
+              "oracle_sensitive": false,
+              "oracle_hits": []
+            },
+            {
+              "backend": "cloud",
+              "level": "internal",
+              "reasons": [
+                "tool:search_clinical_trials"
+              ],
+              "oracle_sensitive": false,
+              "oracle_hits": []
+            }
+          ],
+          "leaked_calls": 0,
+          "over_blocked_calls": 0,
+          "cloud_calls": 2,
+          "local_calls": 0
+        },
+        {
+          "id": "R04",
+          "category": "public",
+          "calls": [
+            {
+              "backend": "cloud",
+              "level": "internal",
+              "reasons": [],
+              "oracle_sensitive": false,
+              "oracle_hits": []
+            },
+            {
+              "backend": "cloud",
+              "level": "internal",
+              "reasons": [
+                "tool:device_recalls"
+              ],
+              "oracle_sensitive": false,
+              "oracle_hits": []
+            }
+          ],
+          "leaked_calls": 0,
+          "over_blocked_calls": 0,
+          "cloud_calls": 2,
+          "local_calls": 0
+        },
+        {
+          "id": "R05",
+          "category": "internal",
+          "calls": [
+            {
+              "backend": "cloud",
+              "level": "internal",
+              "reasons": [],
+              "oracle_sensitive": false,
+              "oracle_hits": []
+            },
+            {
+              "backend": "cloud",
+              "level": "internal",
+              "reasons": [
+                "tool:sites_with_scanner_model"
+              ],
+              "oracle_sensitive": false,
+              "oracle_hits": []
+            }
+          ],
+          "leaked_calls": 0,
+          "over_blocked_calls": 0,
+          "cloud_calls": 2,
+          "local_calls": 0
+        },
+        {
+          "id": "R06",
+          "category": "internal",
+          "calls": [
+            {
+              "backend": "cloud",
+              "level": "internal",
+              "reasons": [],
+              "oracle_sensitive": false,
+              "oracle_hits": []
+            },
+            {
+              "backend": "cloud",
+              "level": "internal",
+              "reasons": [
+                "tool:trace_part_lot"
+              ],
+              "oracle_sensitive": false,
+              "oracle_hits": []
+            }
+          ],
+          "leaked_calls": 0,
+          "over_blocked_calls": 0,
+          "cloud_calls": 2,
+          "local_calls": 0
+        },
+        {
+          "id": "R07",
+          "category": "internal",
+          "calls": [
+            {
+              "backend": "cloud",
+              "level": "internal",
+              "reasons": [],
+              "oracle_sensitive": false,
+              "oracle_hits": []
+            },
+            {
+              "backend": "cloud",
+              "level": "internal",
+              "reasons": [
+                "tool:get_capa"
+              ],
+              "oracle_sensitive": false,
+              "oracle_hits": []
+            }
+          ],
+          "leaked_calls": 0,
+          "over_blocked_calls": 0,
+          "cloud_calls": 2,
+          "local_calls": 0
+        },
+        {
+          "id": "R08",
+          "category": "internal",
+          "calls": [
+            {
+              "backend": "cloud",
+              "level": "internal",
+              "reasons": [],
+              "oracle_sensitive": false,
+              "oracle_hits": []
+            },
+            {
+              "backend": "cloud",
+              "level": "internal",
+              "reasons": [
+                "kb:internal"
+              ],
+              "oracle_sensitive": false,
+              "oracle_hits": []
+            }
+          ],
+          "leaked_calls": 0,
+          "over_blocked_calls": 0,
+          "cloud_calls": 2,
+          "local_calls": 0
+        },
+        {
+          "id": "R09",
+          "category": "internal",
+          "calls": [
+            {
+              "backend": "cloud",
+              "level": "internal",
+              "reasons": [],
+              "oracle_sensitive": false,
+              "oracle_hits": []
+            },
+            {
+              "backend": "cloud",
+              "level": "internal",
+              "reasons": [
+                "tool:list_complaints"
+              ],
+              "oracle_sensitive": false,
+              "oracle_hits": []
+            },
+            {
+              "backend": "cloud",
+              "level": "internal",
+              "reasons": [
+                "tool:list_complaints",
+                "tool:site_overview"
+              ],
+              "oracle_sensitive": false,
+              "oracle_hits": []
+            }
+          ],
+          "leaked_calls": 0,
+          "over_blocked_calls": 0,
+          "cloud_calls": 3,
+          "local_calls": 0
+        },
+        {
+          "id": "R10",
+          "category": "internal",
+          "calls": [
+            {
+              "backend": "cloud",
+              "level": "internal",
+              "reasons": [],
+              "oracle_sensitive": false,
+              "oracle_hits": []
+            },
+            {
+              "backend": "cloud",
+              "level": "internal",
+              "reasons": [
+                "kb:internal"
+              ],
+              "oracle_sensitive": false,
+              "oracle_hits": []
+            }
+          ],
+          "leaked_calls": 0,
+          "over_blocked_calls": 0,
+          "cloud_calls": 2,
+          "local_calls": 0
+        },
+        {
+          "id": "R11",
+          "category": "confidential_retrieved",
+          "calls": [
+            {
+              "backend": "cloud",
+              "level": "internal",
+              "reasons": [],
+              "oracle_sensitive": false,
+              "oracle_hits": []
+            },
+            {
+              "backend": "local",
+              "level": "confidential",
+              "reasons": [
+                "kb:confidential"
+              ],
+              "oracle_sensitive": true,
+              "oracle_hits": [
+                "2026-10-30",
+                "2026-12-18",
+                "2027-01-29"
+              ]
+            }
+          ],
+          "leaked_calls": 0,
+          "over_blocked_calls": 0,
+          "cloud_calls": 1,
+          "local_calls": 1
+        },
+        {
+          "id": "R12",
+          "category": "confidential_retrieved",
+          "calls": [
+            {
+              "backend": "cloud",
+              "level": "internal",
+              "reasons": [],
+              "oracle_sensitive": false,
+              "oracle_hits": []
+            },
+            {
+              "backend": "local",
+              "level": "confidential",
+              "reasons": [
+                "kb:confidential"
+              ],
+              "oracle_sensitive": true,
+              "oracle_hits": [
+                "12 位放射科醫師",
+                "2026-10-30",
+                "2026-12-18"
+              ]
+            }
+          ],
+          "leaked_calls": 0,
+          "over_blocked_calls": 0,
+          "cloud_calls": 1,
+          "local_calls": 1
+        },
+        {
+          "id": "R13",
+          "category": "confidential_retrieved",
+          "calls": [
+            {
+              "backend": "cloud",
+              "level": "internal",
+              "reasons": [],
+              "oracle_sensitive": false,
+              "oracle_hits": []
+            },
+            {
+              "backend": "local",
+              "level": "confidential",
+              "reasons": [
+                "kb:confidential"
+              ],
+              "oracle_sensitive": true,
+              "oracle_hits": [
+                "6,800 例",
+                "切片厚度 | ≤ 2.5 mm | ≤ 3.0 mm",
+                "因為輸入規格與模型架構都改變，初步評估需要提出新的 510(k)，不能用變更評估"
+              ]
+            }
+          ],
+          "leaked_calls": 0,
+          "over_blocked_calls": 0,
+          "cloud_calls": 1,
+          "local_calls": 1
+        },
+        {
+          "id": "R14",
+          "category": "confidential_retrieved",
+          "calls": [
+            {
+              "backend": "cloud",
+              "level": "internal",
+              "reasons": [],
+              "oracle_sensitive": false,
+              "oracle_hits": []
+            },
+            {
+              "backend": "cloud",
+              "level": "internal",
+              "reasons": [
+                "tool:search_510k"
+              ],
+              "oracle_sensitive": false,
+              "oracle_hits": []
+            },
+            {
+              "backend": "local",
+              "level": "confidential",
+              "reasons": [
+                "tool:search_510k",
+                "kb:confidential"
+              ],
+              "oracle_sensitive": true,
+              "oracle_hits": [
+                "2026-10-30",
+                "2026-12-18",
+                "2027-01-29"
+              ]
+            }
+          ],
+          "leaked_calls": 0,
+          "over_blocked_calls": 0,
+          "cloud_calls": 2,
+          "local_calls": 1
+        },
+        {
+          "id": "R15",
+          "category": "confidential_named",
+          "calls": [
+            {
+              "backend": "local",
+              "level": "confidential",
+              "reasons": [
+                "term:NoduleAssist 2.0"
+              ],
+              "oracle_sensitive": false,
+              "oracle_hits": []
+            },
+            {
+              "backend": "local",
+              "level": "confidential",
+              "reasons": [
+                "term:NoduleAssist 2.0",
+                "kb:confidential"
+              ],
+              "oracle_sensitive": true,
+              "oracle_hits": [
+                "12 位放射科醫師",
+                "2026-10-30",
+                "2026-12-18"
+              ]
+            }
+          ],
+          "leaked_calls": 0,
+          "over_blocked_calls": 1,
+          "cloud_calls": 0,
+          "local_calls": 2
+        },
+        {
+          "id": "R16",
+          "category": "confidential_named",
+          "calls": [
+            {
+              "backend": "local",
+              "level": "confidential",
+              "reasons": [
+                "term:NA2",
+                "term:DP-NA2"
+              ],
+              "oracle_sensitive": false,
+              "oracle_hits": []
+            }
+          ],
+          "leaked_calls": 0,
+          "over_blocked_calls": 1,
+          "cloud_calls": 0,
+          "local_calls": 1
+        },
+        {
+          "id": "R17",
+          "category": "confidential_typed",
+          "calls": [
+            {
+              "backend": "cloud",
+              "level": "internal",
+              "reasons": [],
+              "oracle_sensitive": true,
+              "oracle_hits": [
+                "2027-01-29"
+              ]
+            },
+            {
+              "backend": "local",
+              "level": "confidential",
+              "reasons": [
+                "kb:confidential"
+              ],
+              "oracle_sensitive": true,
+              "oracle_hits": [
+                "2026-10-30",
+                "2026-12-18",
+                "2027-01-29"
+              ]
+            }
+          ],
+          "leaked_calls": 1,
+          "over_blocked_calls": 0,
+          "cloud_calls": 1,
+          "local_calls": 1
+        },
+        {
+          "id": "R18",
+          "category": "confidential_typed",
+          "calls": [
+            {
+              "backend": "cloud",
+              "level": "internal",
+              "reasons": [],
+              "oracle_sensitive": true,
+              "oracle_hits": [
+                "6,800 例",
+                "端到端 3D 偵測網路"
+              ]
+            },
+            {
+              "backend": "cloud",
+              "level": "internal",
+              "reasons": [
+                "kb:internal"
+              ],
+              "oracle_sensitive": true,
+              "oracle_hits": [
+                "6,800 例",
+                "端到端 3D 偵測網路"
+              ]
+            }
+          ],
+          "leaked_calls": 2,
+          "over_blocked_calls": 0,
+          "cloud_calls": 2,
+          "local_calls": 0
+        },
+        {
+          "id": "R19",
+          "category": "confidential_typed",
+          "calls": [
+            {
+              "backend": "cloud",
+              "level": "internal",
+              "reasons": [],
+              "oracle_sensitive": true,
+              "oracle_hits": [
+                "12 位放射科醫師"
+              ]
+            }
+          ],
+          "leaked_calls": 1,
+          "over_blocked_calls": 0,
+          "cloud_calls": 1,
+          "local_calls": 0
+        },
+        {
+          "id": "R20",
+          "category": "pii_typed",
+          "calls": [
+            {
+              "backend": "local",
+              "level": "restricted",
+              "reasons": [
+                "pii:phone"
+              ],
+              "oracle_sensitive": true,
+              "oracle_hits": [
+                "0912-345-678"
+              ]
+            },
+            {
+              "backend": "local",
+              "level": "restricted",
+              "reasons": [
+                "pii:phone",
+                "tool:list_complaints"
+              ],
+              "oracle_sensitive": true,
+              "oracle_hits": [
+                "0912-345-678"
+              ]
+            }
+          ],
+          "leaked_calls": 0,
+          "over_blocked_calls": 0,
+          "cloud_calls": 0,
+          "local_calls": 2
+        },
+        {
+          "id": "R21",
+          "category": "pii_typed",
+          "calls": [
+            {
+              "backend": "local",
+              "level": "restricted",
+              "reasons": [
+                "pii:mrn"
+              ],
+              "oracle_sensitive": true,
+              "oracle_hits": [
+                "A20260915"
+              ]
+            },
+            {
+              "backend": "local",
+              "level": "restricted",
+              "reasons": [
+                "pii:mrn",
+                "tool:list_complaints"
+              ],
+              "oracle_sensitive": true,
+              "oracle_hits": [
+                "A20260915"
+              ]
+            }
+          ],
+          "leaked_calls": 0,
+          "over_blocked_calls": 0,
+          "cloud_calls": 0,
+          "local_calls": 2
+        },
+        {
+          "id": "R22",
+          "category": "pii_typed",
+          "calls": [
+            {
+              "backend": "local",
+              "level": "restricted",
+              "reasons": [
+                "pii:email"
+              ],
+              "oracle_sensitive": true,
+              "oracle_hits": [
+                "tech.lee@hospital-b.example"
+              ]
+            },
+            {
+              "backend": "local",
+              "level": "restricted",
+              "reasons": [
+                "pii:email",
+                "tool:site_overview"
+              ],
+              "oracle_sensitive": true,
+              "oracle_hits": [
+                "tech.lee@hospital-b.example"
+              ]
+            }
+          ],
+          "leaked_calls": 0,
+          "over_blocked_calls": 0,
+          "cloud_calls": 0,
+          "local_calls": 2
+        },
+        {
+          "id": "R23",
+          "category": "pii_typed_unusual",
+          "calls": [
+            {
+              "backend": "cloud",
+              "level": "internal",
+              "reasons": [],
+              "oracle_sensitive": true,
+              "oracle_hits": [
+                "零九一二三四五六七八"
+              ]
+            },
+            {
+              "backend": "cloud",
+              "level": "internal",
+              "reasons": [
+                "tool:site_overview"
+              ],
+              "oracle_sensitive": true,
+              "oracle_hits": [
+                "零九一二三四五六七八"
+              ]
+            }
+          ],
+          "leaked_calls": 2,
+          "over_blocked_calls": 0,
+          "cloud_calls": 2,
+          "local_calls": 0
+        },
+        {
+          "id": "R24",
+          "category": "pii_typed_unusual",
+          "calls": [
+            {
+              "backend": "cloud",
+              "level": "internal",
+              "reasons": [],
+              "oracle_sensitive": true,
+              "oracle_hits": [
+                "a123456789"
+              ]
+            },
+            {
+              "backend": "cloud",
+              "level": "internal",
+              "reasons": [
+                "tool:list_complaints"
+              ],
+              "oracle_sensitive": true,
+              "oracle_hits": [
+                "a123456789"
+              ]
+            }
+          ],
+          "leaked_calls": 2,
+          "over_blocked_calls": 0,
+          "cloud_calls": 2,
+          "local_calls": 0
+        },
+        {
+          "id": "R25",
+          "category": "pii_in_data",
+          "calls": [
+            {
+              "backend": "cloud",
+              "level": "internal",
+              "reasons": [],
+              "oracle_sensitive": false,
+              "oracle_hits": []
+            },
+            {
+              "backend": "local",
+              "level": "restricted",
+              "reasons": [
+                "tool:list_complaints",
+                "pii:phone"
+              ],
+              "oracle_sensitive": true,
+              "oracle_hits": [
+                "02-2345-6789"
+              ]
+            }
+          ],
+          "leaked_calls": 0,
+          "over_blocked_calls": 0,
+          "cloud_calls": 1,
+          "local_calls": 1
+        },
+        {
+          "id": "R26",
+          "category": "pii_in_data",
+          "calls": [
+            {
+              "backend": "cloud",
+              "level": "internal",
+              "reasons": [],
+              "oracle_sensitive": false,
+              "oracle_hits": []
+            },
+            {
+              "backend": "local",
+              "level": "restricted",
+              "reasons": [
+                "tool:list_complaints",
+                "pii:national_id"
+              ],
+              "oracle_sensitive": true,
+              "oracle_hits": [
+                "B123456789"
+              ]
+            }
+          ],
+          "leaked_calls": 0,
+          "over_blocked_calls": 0,
+          "cloud_calls": 1,
+          "local_calls": 1
+        },
+        {
+          "id": "R27",
+          "category": "pii_in_data_unusual",
+          "calls": [
+            {
+              "backend": "cloud",
+              "level": "internal",
+              "reasons": [],
+              "oracle_sensitive": false,
+              "oracle_hits": []
+            },
+            {
+              "backend": "cloud",
+              "level": "internal",
+              "reasons": [
+                "tool:list_complaints"
+              ],
+              "oracle_sensitive": true,
+              "oracle_hits": [
+                "(02) 2345 6789"
+              ]
+            }
+          ],
+          "leaked_calls": 1,
+          "over_blocked_calls": 0,
+          "cloud_calls": 2,
+          "local_calls": 0
+        },
+        {
+          "id": "R28",
+          "category": "confidential_mislabelled",
+          "calls": [
+            {
+              "backend": "cloud",
+              "level": "internal",
+              "reasons": [],
+              "oracle_sensitive": false,
+              "oracle_hits": []
+            },
+            {
+              "backend": "cloud",
+              "level": "internal",
+              "reasons": [
+                "kb:internal"
+              ],
+              "oracle_sensitive": true,
+              "oracle_hits": [
+                "2027-01-29"
+              ]
+            }
+          ],
+          "leaked_calls": 1,
+          "over_blocked_calls": 0,
+          "cloud_calls": 2,
+          "local_calls": 0
+        },
+        {
+          "id": "R29",
+          "category": "no_access",
+          "calls": [
+            {
+              "backend": "cloud",
+              "level": "internal",
+              "reasons": [],
+              "oracle_sensitive": false,
+              "oracle_hits": []
+            },
+            {
+              "backend": "cloud",
+              "level": "internal",
+              "reasons": [
+                "kb:internal"
+              ],
+              "oracle_sensitive": false,
+              "oracle_hits": []
+            }
+          ],
+          "leaked_calls": 0,
+          "over_blocked_calls": 0,
+          "cloud_calls": 2,
+          "local_calls": 0
+        },
+        {
+          "id": "R30",
+          "category": "no_access",
+          "calls": [
+            {
+              "backend": "cloud",
+              "level": "internal",
+              "reasons": [],
+              "oracle_sensitive": false,
+              "oracle_hits": []
+            },
+            {
+              "backend": "cloud",
+              "level": "internal",
+              "reasons": [],
+              "oracle_sensitive": false,
+              "oracle_hits": []
+            }
+          ],
+          "leaked_calls": 0,
+          "over_blocked_calls": 0,
+          "cloud_calls": 2,
+          "local_calls": 0
+        }
+      ]
+    },
+    "cloud<=public": {
+      "total": {
+        "cases": 30,
+        "leaked_cases": 0,
+        "leaked_calls": 0,
+        "over_blocked_calls": 36,
+        "cloud_calls": 0,
+        "local_calls": 60
+      },
+      "by_category": {
+        "public": {
+          "cases": 4,
+          "leaked_cases": 0,
+          "leaked_calls": 0,
+          "over_blocked_calls": 8,
+          "cloud_calls": 0,
+          "local_calls": 8
+        },
+        "internal": {
+          "cases": 6,
+          "leaked_cases": 0,
+          "leaked_calls": 0,
+          "over_blocked_calls": 13,
+          "cloud_calls": 0,
+          "local_calls": 13
+        },
+        "confidential_retrieved": {
+          "cases": 4,
+          "leaked_cases": 0,
+          "leaked_calls": 0,
+          "over_blocked_calls": 5,
+          "cloud_calls": 0,
+          "local_calls": 9
+        },
+        "confidential_named": {
+          "cases": 2,
+          "leaked_cases": 0,
+          "leaked_calls": 0,
+          "over_blocked_calls": 2,
+          "cloud_calls": 0,
+          "local_calls": 3
+        },
+        "confidential_typed": {
+          "cases": 3,
+          "leaked_cases": 0,
+          "leaked_calls": 0,
+          "over_blocked_calls": 0,
+          "cloud_calls": 0,
+          "local_calls": 5
+        },
+        "pii_typed": {
+          "cases": 3,
+          "leaked_cases": 0,
+          "leaked_calls": 0,
+          "over_blocked_calls": 0,
+          "cloud_calls": 0,
+          "local_calls": 6
+        },
+        "pii_typed_unusual": {
+          "cases": 2,
+          "leaked_cases": 0,
+          "leaked_calls": 0,
+          "over_blocked_calls": 0,
+          "cloud_calls": 0,
+          "local_calls": 4
+        },
+        "pii_in_data": {
+          "cases": 2,
+          "leaked_cases": 0,
+          "leaked_calls": 0,
+          "over_blocked_calls": 2,
+          "cloud_calls": 0,
+          "local_calls": 4
+        },
+        "pii_in_data_unusual": {
+          "cases": 1,
+          "leaked_cases": 0,
+          "leaked_calls": 0,
+          "over_blocked_calls": 1,
+          "cloud_calls": 0,
+          "local_calls": 2
+        },
+        "confidential_mislabelled": {
+          "cases": 1,
+          "leaked_cases": 0,
+          "leaked_calls": 0,
+          "over_blocked_calls": 1,
+          "cloud_calls": 0,
+          "local_calls": 2
+        },
+        "no_access": {
+          "cases": 2,
+          "leaked_cases": 0,
+          "leaked_calls": 0,
+          "over_blocked_calls": 4,
+          "cloud_calls": 0,
+          "local_calls": 4
+        }
+      },
+      "rows": [
+        {
+          "id": "R01",
+          "category": "public",
+          "calls": [
+            {
+              "backend": "local",
+              "level": "internal",
+              "reasons": [],
+              "oracle_sensitive": false,
+              "oracle_hits": []
+            },
+            {
+              "backend": "local",
+              "level": "internal",
+              "reasons": [
+                "tool:search_510k"
+              ],
+              "oracle_sensitive": false,
+              "oracle_hits": []
+            }
+          ],
+          "leaked_calls": 0,
+          "over_blocked_calls": 2,
+          "cloud_calls": 0,
+          "local_calls": 2
+        },
+        {
+          "id": "R02",
+          "category": "public",
+          "calls": [
+            {
+              "backend": "local",
+              "level": "internal",
+              "reasons": [],
+              "oracle_sensitive": false,
+              "oracle_hits": []
+            },
+            {
+              "backend": "local",
+              "level": "internal",
+              "reasons": [],
+              "oracle_sensitive": false,
+              "oracle_hits": []
+            }
+          ],
+          "leaked_calls": 0,
+          "over_blocked_calls": 2,
+          "cloud_calls": 0,
+          "local_calls": 2
+        },
+        {
+          "id": "R03",
+          "category": "public",
+          "calls": [
+            {
+              "backend": "local",
+              "level": "internal",
+              "reasons": [],
+              "oracle_sensitive": false,
+              "oracle_hits": []
+            },
+            {
+              "backend": "local",
+              "level": "internal",
+              "reasons": [
+                "tool:search_clinical_trials"
+              ],
+              "oracle_sensitive": false,
+              "oracle_hits": []
+            }
+          ],
+          "leaked_calls": 0,
+          "over_blocked_calls": 2,
+          "cloud_calls": 0,
+          "local_calls": 2
+        },
+        {
+          "id": "R04",
+          "category": "public",
+          "calls": [
+            {
+              "backend": "local",
+              "level": "internal",
+              "reasons": [],
+              "oracle_sensitive": false,
+              "oracle_hits": []
+            },
+            {
+              "backend": "local",
+              "level": "internal",
+              "reasons": [
+                "tool:device_recalls"
+              ],
+              "oracle_sensitive": false,
+              "oracle_hits": []
+            }
+          ],
+          "leaked_calls": 0,
+          "over_blocked_calls": 2,
+          "cloud_calls": 0,
+          "local_calls": 2
+        },
+        {
+          "id": "R05",
+          "category": "internal",
+          "calls": [
+            {
+              "backend": "local",
+              "level": "internal",
+              "reasons": [],
+              "oracle_sensitive": false,
+              "oracle_hits": []
+            },
+            {
+              "backend": "local",
+              "level": "internal",
+              "reasons": [
+                "tool:sites_with_scanner_model"
+              ],
+              "oracle_sensitive": false,
+              "oracle_hits": []
+            }
+          ],
+          "leaked_calls": 0,
+          "over_blocked_calls": 2,
+          "cloud_calls": 0,
+          "local_calls": 2
+        },
+        {
+          "id": "R06",
+          "category": "internal",
+          "calls": [
+            {
+              "backend": "local",
+              "level": "internal",
+              "reasons": [],
+              "oracle_sensitive": false,
+              "oracle_hits": []
+            },
+            {
+              "backend": "local",
+              "level": "internal",
+              "reasons": [
+                "tool:trace_part_lot"
+              ],
+              "oracle_sensitive": false,
+              "oracle_hits": []
+            }
+          ],
+          "leaked_calls": 0,
+          "over_blocked_calls": 2,
+          "cloud_calls": 0,
+          "local_calls": 2
+        },
+        {
+          "id": "R07",
+          "category": "internal",
+          "calls": [
+            {
+              "backend": "local",
+              "level": "internal",
+              "reasons": [],
+              "oracle_sensitive": false,
+              "oracle_hits": []
+            },
+            {
+              "backend": "local",
+              "level": "internal",
+              "reasons": [
+                "tool:get_capa"
+              ],
+              "oracle_sensitive": false,
+              "oracle_hits": []
+            }
+          ],
+          "leaked_calls": 0,
+          "over_blocked_calls": 2,
+          "cloud_calls": 0,
+          "local_calls": 2
+        },
+        {
+          "id": "R08",
+          "category": "internal",
+          "calls": [
+            {
+              "backend": "local",
+              "level": "internal",
+              "reasons": [],
+              "oracle_sensitive": false,
+              "oracle_hits": []
+            },
+            {
+              "backend": "local",
+              "level": "internal",
+              "reasons": [
+                "kb:internal"
+              ],
+              "oracle_sensitive": false,
+              "oracle_hits": []
+            }
+          ],
+          "leaked_calls": 0,
+          "over_blocked_calls": 2,
+          "cloud_calls": 0,
+          "local_calls": 2
+        },
+        {
+          "id": "R09",
+          "category": "internal",
+          "calls": [
+            {
+              "backend": "local",
+              "level": "internal",
+              "reasons": [],
+              "oracle_sensitive": false,
+              "oracle_hits": []
+            },
+            {
+              "backend": "local",
+              "level": "internal",
+              "reasons": [
+                "tool:list_complaints"
+              ],
+              "oracle_sensitive": false,
+              "oracle_hits": []
+            },
+            {
+              "backend": "local",
+              "level": "internal",
+              "reasons": [
+                "tool:list_complaints",
+                "tool:site_overview"
+              ],
+              "oracle_sensitive": false,
+              "oracle_hits": []
+            }
+          ],
+          "leaked_calls": 0,
+          "over_blocked_calls": 3,
+          "cloud_calls": 0,
+          "local_calls": 3
+        },
+        {
+          "id": "R10",
+          "category": "internal",
+          "calls": [
+            {
+              "backend": "local",
+              "level": "internal",
+              "reasons": [],
+              "oracle_sensitive": false,
+              "oracle_hits": []
+            },
+            {
+              "backend": "local",
+              "level": "internal",
+              "reasons": [
+                "kb:internal"
+              ],
+              "oracle_sensitive": false,
+              "oracle_hits": []
+            }
+          ],
+          "leaked_calls": 0,
+          "over_blocked_calls": 2,
+          "cloud_calls": 0,
+          "local_calls": 2
+        },
+        {
+          "id": "R11",
+          "category": "confidential_retrieved",
+          "calls": [
+            {
+              "backend": "local",
+              "level": "internal",
+              "reasons": [],
+              "oracle_sensitive": false,
+              "oracle_hits": []
+            },
+            {
+              "backend": "local",
+              "level": "confidential",
+              "reasons": [
+                "kb:confidential"
+              ],
+              "oracle_sensitive": true,
+              "oracle_hits": [
+                "2026-10-30",
+                "2026-12-18",
+                "2027-01-29"
+              ]
+            }
+          ],
+          "leaked_calls": 0,
+          "over_blocked_calls": 1,
+          "cloud_calls": 0,
+          "local_calls": 2
+        },
+        {
+          "id": "R12",
+          "category": "confidential_retrieved",
+          "calls": [
+            {
+              "backend": "local",
+              "level": "internal",
+              "reasons": [],
+              "oracle_sensitive": false,
+              "oracle_hits": []
+            },
+            {
+              "backend": "local",
+              "level": "confidential",
+              "reasons": [
+                "kb:confidential"
+              ],
+              "oracle_sensitive": true,
+              "oracle_hits": [
+                "12 位放射科醫師",
+                "2026-10-30",
+                "2026-12-18"
+              ]
+            }
+          ],
+          "leaked_calls": 0,
+          "over_blocked_calls": 1,
+          "cloud_calls": 0,
+          "local_calls": 2
+        },
+        {
+          "id": "R13",
+          "category": "confidential_retrieved",
+          "calls": [
+            {
+              "backend": "local",
+              "level": "internal",
+              "reasons": [],
+              "oracle_sensitive": false,
+              "oracle_hits": []
+            },
+            {
+              "backend": "local",
+              "level": "confidential",
+              "reasons": [
+                "kb:confidential"
+              ],
+              "oracle_sensitive": true,
+              "oracle_hits": [
+                "6,800 例",
+                "切片厚度 | ≤ 2.5 mm | ≤ 3.0 mm",
+                "因為輸入規格與模型架構都改變，初步評估需要提出新的 510(k)，不能用變更評估"
+              ]
+            }
+          ],
+          "leaked_calls": 0,
+          "over_blocked_calls": 1,
+          "cloud_calls": 0,
+          "local_calls": 2
+        },
+        {
+          "id": "R14",
+          "category": "confidential_retrieved",
+          "calls": [
+            {
+              "backend": "local",
+              "level": "internal",
+              "reasons": [],
+              "oracle_sensitive": false,
+              "oracle_hits": []
+            },
+            {
+              "backend": "local",
+              "level": "internal",
+              "reasons": [
+                "tool:search_510k"
+              ],
+              "oracle_sensitive": false,
+              "oracle_hits": []
+            },
+            {
+              "backend": "local",
+              "level": "confidential",
+              "reasons": [
+                "tool:search_510k",
+                "kb:confidential"
+              ],
+              "oracle_sensitive": true,
+              "oracle_hits": [
+                "2026-10-30",
+                "2026-12-18",
+                "2027-01-29"
+              ]
+            }
+          ],
+          "leaked_calls": 0,
+          "over_blocked_calls": 2,
+          "cloud_calls": 0,
+          "local_calls": 3
+        },
+        {
+          "id": "R15",
+          "category": "confidential_named",
+          "calls": [
+            {
+              "backend": "local",
+              "level": "confidential",
+              "reasons": [
+                "term:NoduleAssist 2.0"
+              ],
+              "oracle_sensitive": false,
+              "oracle_hits": []
+            },
+            {
+              "backend": "local",
+              "level": "confidential",
+              "reasons": [
+                "term:NoduleAssist 2.0",
+                "kb:confidential"
+              ],
+              "oracle_sensitive": true,
+              "oracle_hits": [
+                "12 位放射科醫師",
+                "2026-10-30",
+                "2026-12-18"
+              ]
+            }
+          ],
+          "leaked_calls": 0,
+          "over_blocked_calls": 1,
+          "cloud_calls": 0,
+          "local_calls": 2
+        },
+        {
+          "id": "R16",
+          "category": "confidential_named",
+          "calls": [
+            {
+              "backend": "local",
+              "level": "confidential",
+              "reasons": [
+                "term:NA2",
+                "term:DP-NA2"
+              ],
+              "oracle_sensitive": false,
+              "oracle_hits": []
+            }
+          ],
+          "leaked_calls": 0,
+          "over_blocked_calls": 1,
+          "cloud_calls": 0,
+          "local_calls": 1
+        },
+        {
+          "id": "R17",
+          "category": "confidential_typed",
+          "calls": [
+            {
+              "backend": "local",
+              "level": "internal",
+              "reasons": [],
+              "oracle_sensitive": true,
+              "oracle_hits": [
+                "2027-01-29"
+              ]
+            },
+            {
+              "backend": "local",
+              "level": "confidential",
+              "reasons": [
+                "kb:confidential"
+              ],
+              "oracle_sensitive": true,
+              "oracle_hits": [
+                "2026-10-30",
+                "2026-12-18",
+                "2027-01-29"
+              ]
+            }
+          ],
+          "leaked_calls": 0,
+          "over_blocked_calls": 0,
+          "cloud_calls": 0,
+          "local_calls": 2
+        },
+        {
+          "id": "R18",
+          "category": "confidential_typed",
+          "calls": [
+            {
+              "backend": "local",
+              "level": "internal",
+              "reasons": [],
+              "oracle_sensitive": true,
+              "oracle_hits": [
+                "6,800 例",
+                "端到端 3D 偵測網路"
+              ]
+            },
+            {
+              "backend": "local",
+              "level": "internal",
+              "reasons": [
+                "kb:internal"
+              ],
+              "oracle_sensitive": true,
+              "oracle_hits": [
+                "6,800 例",
+                "端到端 3D 偵測網路"
+              ]
+            }
+          ],
+          "leaked_calls": 0,
+          "over_blocked_calls": 0,
+          "cloud_calls": 0,
+          "local_calls": 2
+        },
+        {
+          "id": "R19",
+          "category": "confidential_typed",
+          "calls": [
+            {
+              "backend": "local",
+              "level": "internal",
+              "reasons": [],
+              "oracle_sensitive": true,
+              "oracle_hits": [
+                "12 位放射科醫師"
+              ]
+            }
+          ],
+          "leaked_calls": 0,
+          "over_blocked_calls": 0,
+          "cloud_calls": 0,
+          "local_calls": 1
+        },
+        {
+          "id": "R20",
+          "category": "pii_typed",
+          "calls": [
+            {
+              "backend": "local",
+              "level": "restricted",
+              "reasons": [
+                "pii:phone"
+              ],
+              "oracle_sensitive": true,
+              "oracle_hits": [
+                "0912-345-678"
+              ]
+            },
+            {
+              "backend": "local",
+              "level": "restricted",
+              "reasons": [
+                "pii:phone",
+                "tool:list_complaints"
+              ],
+              "oracle_sensitive": true,
+              "oracle_hits": [
+                "0912-345-678"
+              ]
+            }
+          ],
+          "leaked_calls": 0,
+          "over_blocked_calls": 0,
+          "cloud_calls": 0,
+          "local_calls": 2
+        },
+        {
+          "id": "R21",
+          "category": "pii_typed",
+          "calls": [
+            {
+              "backend": "local",
+              "level": "restricted",
+              "reasons": [
+                "pii:mrn"
+              ],
+              "oracle_sensitive": true,
+              "oracle_hits": [
+                "A20260915"
+              ]
+            },
+            {
+              "backend": "local",
+              "level": "restricted",
+              "reasons": [
+                "pii:mrn",
+                "tool:list_complaints"
+              ],
+              "oracle_sensitive": true,
+              "oracle_hits": [
+                "A20260915"
+              ]
+            }
+          ],
+          "leaked_calls": 0,
+          "over_blocked_calls": 0,
+          "cloud_calls": 0,
+          "local_calls": 2
+        },
+        {
+          "id": "R22",
+          "category": "pii_typed",
+          "calls": [
+            {
+              "backend": "local",
+              "level": "restricted",
+              "reasons": [
+                "pii:email"
+              ],
+              "oracle_sensitive": true,
+              "oracle_hits": [
+                "tech.lee@hospital-b.example"
+              ]
+            },
+            {
+              "backend": "local",
+              "level": "restricted",
+              "reasons": [
+                "pii:email",
+                "tool:site_overview"
+              ],
+              "oracle_sensitive": true,
+              "oracle_hits": [
+                "tech.lee@hospital-b.example"
+              ]
+            }
+          ],
+          "leaked_calls": 0,
+          "over_blocked_calls": 0,
+          "cloud_calls": 0,
+          "local_calls": 2
+        },
+        {
+          "id": "R23",
+          "category": "pii_typed_unusual",
+          "calls": [
+            {
+              "backend": "local",
+              "level": "internal",
+              "reasons": [],
+              "oracle_sensitive": true,
+              "oracle_hits": [
+                "零九一二三四五六七八"
+              ]
+            },
+            {
+              "backend": "local",
+              "level": "internal",
+              "reasons": [
+                "tool:site_overview"
+              ],
+              "oracle_sensitive": true,
+              "oracle_hits": [
+                "零九一二三四五六七八"
+              ]
+            }
+          ],
+          "leaked_calls": 0,
+          "over_blocked_calls": 0,
+          "cloud_calls": 0,
+          "local_calls": 2
+        },
+        {
+          "id": "R24",
+          "category": "pii_typed_unusual",
+          "calls": [
+            {
+              "backend": "local",
+              "level": "internal",
+              "reasons": [],
+              "oracle_sensitive": true,
+              "oracle_hits": [
+                "a123456789"
+              ]
+            },
+            {
+              "backend": "local",
+              "level": "internal",
+              "reasons": [
+                "tool:list_complaints"
+              ],
+              "oracle_sensitive": true,
+              "oracle_hits": [
+                "a123456789"
+              ]
+            }
+          ],
+          "leaked_calls": 0,
+          "over_blocked_calls": 0,
+          "cloud_calls": 0,
+          "local_calls": 2
+        },
+        {
+          "id": "R25",
+          "category": "pii_in_data",
+          "calls": [
+            {
+              "backend": "local",
+              "level": "internal",
+              "reasons": [],
+              "oracle_sensitive": false,
+              "oracle_hits": []
+            },
+            {
+              "backend": "local",
+              "level": "restricted",
+              "reasons": [
+                "tool:list_complaints",
+                "pii:phone"
+              ],
+              "oracle_sensitive": true,
+              "oracle_hits": [
+                "02-2345-6789"
+              ]
+            }
+          ],
+          "leaked_calls": 0,
+          "over_blocked_calls": 1,
+          "cloud_calls": 0,
+          "local_calls": 2
+        },
+        {
+          "id": "R26",
+          "category": "pii_in_data",
+          "calls": [
+            {
+              "backend": "local",
+              "level": "internal",
+              "reasons": [],
+              "oracle_sensitive": false,
+              "oracle_hits": []
+            },
+            {
+              "backend": "local",
+              "level": "restricted",
+              "reasons": [
+                "tool:list_complaints",
+                "pii:national_id"
+              ],
+              "oracle_sensitive": true,
+              "oracle_hits": [
+                "B123456789"
+              ]
+            }
+          ],
+          "leaked_calls": 0,
+          "over_blocked_calls": 1,
+          "cloud_calls": 0,
+          "local_calls": 2
+        },
+        {
+          "id": "R27",
+          "category": "pii_in_data_unusual",
+          "calls": [
+            {
+              "backend": "local",
+              "level": "internal",
+              "reasons": [],
+              "oracle_sensitive": false,
+              "oracle_hits": []
+            },
+            {
+              "backend": "local",
+              "level": "internal",
+              "reasons": [
+                "tool:list_complaints"
+              ],
+              "oracle_sensitive": true,
+              "oracle_hits": [
+                "(02) 2345 6789"
+              ]
+            }
+          ],
+          "leaked_calls": 0,
+          "over_blocked_calls": 1,
+          "cloud_calls": 0,
+          "local_calls": 2
+        },
+        {
+          "id": "R28",
+          "category": "confidential_mislabelled",
+          "calls": [
+            {
+              "backend": "local",
+              "level": "internal",
+              "reasons": [],
+              "oracle_sensitive": false,
+              "oracle_hits": []
+            },
+            {
+              "backend": "local",
+              "level": "internal",
+              "reasons": [
+                "kb:internal"
+              ],
+              "oracle_sensitive": true,
+              "oracle_hits": [
+                "2027-01-29"
+              ]
+            }
+          ],
+          "leaked_calls": 0,
+          "over_blocked_calls": 1,
+          "cloud_calls": 0,
+          "local_calls": 2
+        },
+        {
+          "id": "R29",
+          "category": "no_access",
+          "calls": [
+            {
+              "backend": "local",
+              "level": "internal",
+              "reasons": [],
+              "oracle_sensitive": false,
+              "oracle_hits": []
+            },
+            {
+              "backend": "local",
+              "level": "internal",
+              "reasons": [
+                "kb:internal"
+              ],
+              "oracle_sensitive": false,
+              "oracle_hits": []
+            }
+          ],
+          "leaked_calls": 0,
+          "over_blocked_calls": 2,
+          "cloud_calls": 0,
+          "local_calls": 2
+        },
+        {
+          "id": "R30",
+          "category": "no_access",
+          "calls": [
+            {
+              "backend": "local",
+              "level": "internal",
+              "reasons": [],
+              "oracle_sensitive": false,
+              "oracle_hits": []
+            },
+            {
+              "backend": "local",
+              "level": "internal",
+              "reasons": [],
+              "oracle_sensitive": false,
+              "oracle_hits": []
+            }
+          ],
+          "leaked_calls": 0,
+          "over_blocked_calls": 2,
+          "cloud_calls": 0,
+          "local_calls": 2
+        }
+      ]
+    }
+  }
+}

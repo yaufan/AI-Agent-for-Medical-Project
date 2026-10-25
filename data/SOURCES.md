@@ -22,6 +22,10 @@
 |---|---|---|---|
 | bge-m3 | 向量檢索 | Ollama `bge-m3`（原始模型 BAAI/bge-m3） | MIT |
 | bge-reranker-v2-m3 | 重排序 | Hugging Face `BAAI/bge-reranker-v2-m3` | Apache-2.0 |
+| Qwen3.8-27B（GGUF Q8_0） | M2／M4 地端對話模型；M3 比較 A | 本機既有的 llama.cpp 容器（GGUF，`ggml-org` 轉檔） | 待確認：M3 在本機從模型頁面確認後填入 |
+| Qwen3.8-27B（GGUF Q4） | M3 比較 B：量化影響 | Hugging Face（GGUF 轉檔，下載前確認來源與授權） | 待確認：下載前確認 |
+| Qwen3-8B | M3 比較 C：小模型、分級路由的地端端 | Ollama `qwen3:8b`／Hugging Face `Qwen/Qwen3-8B` | Apache-2.0（下載前再確認模型頁面） |
+| Claude Opus 5.5（`claude-opus-5-5`） | M3 雲端模型（Anthropic API） | Anthropic API | 商用 API，依 Anthropic 服務條款；只送公開與內部等級的資料（見 `agenttools/gateway.py`） |
 
 模型檔不放進 repo；版本與 digest 記在 `results/m1/env-gx10-01.md`。
 

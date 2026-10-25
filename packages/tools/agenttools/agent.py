@@ -27,6 +27,7 @@ class LLMReply:
     tool_calls: list[dict]
     latency_s: float
     usage: dict = field(default_factory=dict)
+    raw: list | None = None   # backend-native content to replay unchanged (Claude thinking blocks)
 
 
 class ChatLLM:
@@ -44,7 +45,8 @@ class ChatLLM:
         for attempt in range(self.retries + 1):
             t0 = time.time()
             try:
-                body = {"model": self.model, "messages": messages, "temperature": self.temperature, **self.extra_body}
+                clean = [{k: v for k, v in m.items() if not k.startswith("_")} for m in messages]
+                body = {"model": self.model, "messages": clean, "temperature": self.temperature, **self.extra_body}
                 if tools:
                     body["tools"] = tools
                 r = self.http.post("/chat/completions", json=body)
@@ -76,7 +78,7 @@ def run(llm, registry: Registry, guard: Guard, session: Session, max_steps: int 
         if not reply.tool_calls:
             return {"answer": reply.content, "steps": steps, "trace": session.trace, "usage": usage,
                     "seconds": round(time.time() - t0, 2), "stopped": "answer"}
-        messages.append({"role": "assistant", "content": reply.content, "tool_calls": [
+        messages.append({"role": "assistant", "content": reply.content, "_raw": reply.raw, "tool_calls": [
             {"id": c["id"], "type": "function", "function": {"name": c["name"], "arguments": c["arguments"]}}
             for c in reply.tool_calls]})
         for c in reply.tool_calls:

@@ -21,6 +21,7 @@ import json
 import re
 import time
 
+from . import sensitivity
 from .core import Registry, Session, ToolError
 
 WRITE_INTENT = {
@@ -82,6 +83,11 @@ class Guard:
                     entry["tainted_fields"] = tainted
                     args = {**args, "_provenance": {"copied_from_third_party_text": tainted}}
             result = tool.fn(session, **args)
+            level, reasons = sensitivity.label_result(name, result)
+            entry["level"] = level
+            if level > session.data_level:
+                session.data_level = level
+            session.data_reasons += [r for r in reasons if r not in session.data_reasons]
             if isinstance(result, dict) and "untrusted" in result:
                 session.untrusted_seen.append(json.dumps(result["untrusted"], ensure_ascii=False, default=str))
             entry.update(ok=True)

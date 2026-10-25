@@ -22,7 +22,7 @@
 | `packages/rag/` | 檢索與評估 | `python -m pytest -q packages/rag/tests`（PDF 相關測試在未下載時自動略過） |
 | `packages/tools/` | 工具、守門、草稿核准、MCP | `python -m pytest -q packages/tools/tests` |
 | `apps/assistant-ui/` | Chainlit 示範介面（`make ui`） | `python -m pytest -q apps/assistant-ui/tests` |
-| `eval/` | 題庫、使用者、評估、閘門 | `python eval/run_retrieval.py`；`python eval/check_gate.py --baseline results/m1 --candidate <dir>`；`python eval/injection/run_injection.py --fail-on-created`；`python eval/text2sql/run_text2sql.py --model gold` |
+| `eval/` | 題庫、使用者、評估、閘門 | `python eval/run_retrieval.py`；`python eval/check_gate.py --baseline results/m1 --candidate <dir>`；`python eval/injection/run_injection.py --fail-on-created`；`python eval/text2sql/run_text2sql.py --model gold [--bank v2]`；`python eval/routing/run_routing.py` |
 
 `make test` 跑全部測試；`make data` 產生合成資料到 `data/synthetic/`（不進 git）；`make eval-m1` 下載公開 PDF 到 `data/raw/`（不進 git）並跑 M1 評估。
 

@@ -147,7 +147,8 @@ def build_registry(ctx: Context) -> Registry:
             raise ToolError("unavailable", "knowledge base is not configured")
         hits, _ = ctx.retriever.search(query, session.groups, k=k, acl="pre")  # groups come from the session
         return {"untrusted": [{"chunk_id": h.chunk.chunk_id, "doc_id": h.chunk.doc_id, "heading": h.chunk.heading,
-                               "page": h.chunk.page, "text": h.chunk.text[:1500]} for h in hits]}
+                               "classification": h.chunk.classification, "page": h.chunk.page,
+                               "text": h.chunk.text[:1500]} for h in hits]}
 
     # ---------------- public regulatory APIs (read) ----------------
     @reg.register("search_510k", "Search FDA 510(k) clearances by product code (e.g. OEB) or device name.", "read",
