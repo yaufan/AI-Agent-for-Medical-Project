@@ -7,22 +7,30 @@ CLUSTER=${CLUSTER:-kind}
 : > "$OUT"
 now() { date +%s.%N; }
 record() { python3 -c "import json,sys; print(json.dumps({'step': sys.argv[1], 'seconds': round(float(sys.argv[3]) - float(sys.argv[2]), 1), 'version': sys.argv[4]}))" "$@" | tee -a "$OUT"; }
-version() { kubectl run probe-$RANDOM --rm -i --restart=Never --image=curlimages/curl:8.11.1 -q -- \
-              curl -s http://assistant-api/version; }
+version() {  # version reported by a ready pod of the deployment; retried, fails if it never matches $1
+  for _ in $(seq 30); do
+    v=$(kubectl exec deploy/assistant-api -- python -c \
+          "import json,urllib.request;print(json.load(urllib.request.urlopen('http://localhost:8080/version'))['version'])" \
+          2>/dev/null || true)
+    [ "$v" = "$1" ] && { echo "$v"; return 0; }
+    sleep 2
+  done
+  echo "expected $1, got '${v:-}'" >&2; return 1
+}
 
 kind load docker-image --name "$CLUSTER" assistant-api:0.1.0 assistant-api:0.2.0
 
 t0=$(now)
 kubectl apply -f services/assistant-api/deploy/k8s/
 kubectl rollout status deployment/assistant-api --timeout=300s
-record deploy "$t0" "$(now)" "$(version)"
+t1=$(now); v=$(version 0.1.0); record deploy "$t0" "$t1" "$v"
 
 t0=$(now)
 kubectl set image deployment/assistant-api api=assistant-api:0.2.0
 kubectl rollout status deployment/assistant-api --timeout=300s
-record update "$t0" "$(now)" "$(version)"
+t1=$(now); v=$(version 0.2.0); record update "$t0" "$t1" "$v"
 
 t0=$(now)
 kubectl rollout undo deployment/assistant-api
 kubectl rollout status deployment/assistant-api --timeout=300s
-record rollback "$t0" "$(now)" "$(version)"
+t1=$(now); v=$(version 0.1.0); record rollback "$t0" "$t1" "$v"
