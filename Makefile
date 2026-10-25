@@ -13,6 +13,7 @@ test:
 	python -m pytest -q packages/rag/tests
 	python -m pytest -q packages/tools/tests
 	python -m pytest -q apps/assistant-ui/tests
+	python -m pytest -q services/assistant-api/tests
 
 data:
 	cd packages/erpqms && python -m erpqms.generate --out ../../data/synthetic/erpqms

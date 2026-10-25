@@ -69,6 +69,33 @@ jobs:
       - name: Demo UI backend (no Chainlit needed)
         run: python -m pytest -q apps/assistant-ui/tests
 
+  assistant-api:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.11"}
+      - run: pip install -r services/assistant-api/requirements.txt ./packages/rag -e "./packages/tools[test]"
+      - name: API tests
+        run: python -m pytest -q services/assistant-api/tests
+      - name: Build two image versions
+        run: |
+          for v in 0.1.0 0.2.0; do
+            docker build -f services/assistant-api/deploy/Dockerfile --build-arg APP_VERSION=$v -t assistant-api:$v .
+          done
+      - uses: helm/kind-action@v1
+        with: {cluster_name: m3}
+      - name: Deploy, update and roll back on kind (timed)
+        run: OUT=timings.jsonl services/assistant-api/deploy/kind-timing.sh
+      - name: Timings to the job summary
+        if: always()
+        run: |
+          echo '### assistant-api on kind' >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"; cat timings.jsonl >> "$GITHUB_STEP_SUMMARY" || true; echo '```' >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: {name: kind-timings, path: timings.jsonl}
+
   erpqms-postgres:
     runs-on: ubuntu-latest
     services:

@@ -1,0 +1,71 @@
+# kubectl apply -f services/assistant-api/deploy/k8s/
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: assistant-api-config
+data:
+  ASSISTANT_PUBLIC_PDFS: "0"
+  # Local model (OpenAI-compatible). Leave empty to run the fixed workflow.
+  ASSISTANT_LLM_BASE_URL: ""
+  ASSISTANT_LLM_MODEL: ""
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: assistant-api
+  labels: {app: assistant-api}
+spec:
+  # Drafts and the audit log live in SQLite on the pod's volume, so one replica only.
+  # Scaling out needs them in PostgreSQL first (the ERP + QMS SQL already runs there, see packages/erpqms).
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate: {maxSurge: 1, maxUnavailable: 0}
+  selector:
+    matchLabels: {app: assistant-api}
+  template:
+    metadata:
+      labels: {app: assistant-api}
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+      containers:
+        - name: api
+          image: assistant-api:0.1.0
+          imagePullPolicy: IfNotPresent
+          ports: [{containerPort: 8080}]
+          envFrom:
+            - configMapRef: {name: assistant-api-config}
+          resources:
+            requests: {cpu: 250m, memory: 512Mi}
+            limits: {cpu: "1", memory: 1Gi}
+          startupProbe:
+            httpGet: {path: /readyz, port: 8080}
+            periodSeconds: 2
+            failureThreshold: 60
+          readinessProbe:
+            httpGet: {path: /readyz, port: 8080}
+            periodSeconds: 5
+          livenessProbe:
+            httpGet: {path: /healthz, port: 8080}
+            periodSeconds: 20
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+          volumeMounts:
+            - {name: data, mountPath: /data}
+            - {name: tmp, mountPath: /tmp}
+      volumes:
+        - name: data
+          emptyDir: {}     # demo: drafts reset on restart; use a PersistentVolumeClaim to keep them
+        - name: tmp
+          emptyDir: {sizeLimit: 256Mi}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: assistant-api
+spec:
+  selector: {app: assistant-api}
+  ports: [{port: 80, targetPort: 8080}]
