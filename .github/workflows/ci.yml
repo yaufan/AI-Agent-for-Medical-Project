@@ -86,7 +86,7 @@ jobs:
       - uses: helm/kind-action@v1
         with: {cluster_name: m3}
       - name: Deploy, update and roll back on kind (timed)
-        run: OUT=timings.jsonl services/assistant-api/deploy/kind-timing.sh
+        run: OUT=timings.jsonl CLUSTER=m3 services/assistant-api/deploy/kind-timing.sh
       - name: Timings to the job summary
         if: always()
         run: |
